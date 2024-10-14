@@ -30,11 +30,6 @@ export default async function Home() {
                 dayGridPlugin,
                 interactionPlugin,
                 timeGridPlugin]}
-                headerToolbar ={[
-                  left: 'prev, next, today',
-                  center: 'title',
-                  right: 'resourceTimelineWork, dayGridMonth, timeGridWeek'
-                ]}
             />
 
           </div>
