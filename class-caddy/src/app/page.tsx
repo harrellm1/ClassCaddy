@@ -1,3 +1,4 @@
+"use client"
 import Link from "next/link";
 import React from 'react'
 import FullCalendar from '@fullcalendar/react'
@@ -30,6 +31,21 @@ export default async function Home() {
                 dayGridPlugin,
                 interactionPlugin,
                 timeGridPlugin]}
+                headerToolbar={{
+                  left: 'prev, next, today',
+                  center: 'title',
+                  right: 'resourceTimelineWork, dayGridMonth,timeGridWeek, timeGridDay'
+
+                }}
+                events={[]}
+                nowIndicator={true}
+                editable={true}
+                droppable={true}
+                selectable={true}
+                selectMirror={true}
+                //dateClick={{}}
+                //drop={}
+
             />
 
           </div>
