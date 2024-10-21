@@ -14,17 +14,18 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Post {
-    id        Int      @id @default(autoincrement())
-    name      String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
 
-    createdBy   User   @relation(fields: [createdById], references: [id])
-    createdById String
+//model Post {
+   // id        Int      @id @default(autoincrement())
+    //name      String
+    //createdAt DateTime @default(now())
+    //updatedAt DateTime @updatedAt
 
-    @@index([name])
-}
+   // createdBy   User   @relation(fields: [createdById], references: [id])
+    //createdById String
+
+   // @@index([name])
+//}
 
 // Necessary for Next auth
 model Account {
@@ -54,6 +55,8 @@ model Session {
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+
+
 model User {
     id            String    @id @default(cuid())
     name          String?
@@ -62,7 +65,22 @@ model User {
     image         String?
     accounts      Account[]
     sessions      Session[]
-    posts         Post[]
+}
+
+model Course {
+    courseNumber        String @id
+    courseName          String
+    courseInstructor    String
+}
+
+
+
+model studentUser {
+    accountID   Int @id
+    firstName   String
+    lastName    String
+    email       String
+    passWord    String
 }
 
 model VerificationToken {
