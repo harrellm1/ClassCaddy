@@ -35,11 +35,11 @@ model Account {
     provider                 String
     providerAccountId        String
     refresh_token            String? @db.Text
-    access_token             String? // @db.Text
+    access_token             String? @db.Text
     expires_at               Int?
     token_type               String?
     scope                    String?
-    id_token                 String? // @db.Text
+    id_token                 String?  @db.Text
     session_state            String?
     user                     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
     refresh_token_expires_in Int?
@@ -56,31 +56,24 @@ model Session {
 }
 
 
-
 model User {
     id            String    @id @default(cuid())
-    name          String?
-    email         String?   @unique
+    name          String
+    email         String   @unique
     emailVerified DateTime?
     image         String?
     accounts      Account[]
     sessions      Session[]
+    courses       Course []
 }
 
 model Course {
-    courseNumber        String @id
+    id                  Int @id @default(autoincrement())
+    courseNumber        String 
     courseName          String
     courseInstructor    String
-}
-
-
-
-model studentUser {
-    accountID   Int @id
-    firstName   String
-    lastName    String
-    email       String
-    passWord    String
+    student             User @relation(fields:[studentId], references:[id])
+    studentId           String
 }
 
 model VerificationToken {
@@ -90,3 +83,5 @@ model VerificationToken {
 
     @@unique([identifier, token])
 }
+
+
