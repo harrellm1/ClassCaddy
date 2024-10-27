@@ -1,67 +1,100 @@
-import Link from "next/link";
+"use client"; // Marking this file as a Client Component
 
-import { LatestPost } from "~/app/_components/post";
-import { getServerAuthSession } from "~/server/auth";
-import { api, HydrateClient } from "~/trpc/server";
+import { useState } from "react";
+import Logo from "~/app/_components/logo"; // Import the Logo component
 
-export default async function Home() {
-  const hello = await api.post.hello({ text: "from tRPC" });
-  const session = await getServerAuthSession();
+export default function Home() {
+  const [showCalendar, setShowCalendar] = useState(false); // State to toggle views
 
-  void api.post.getLatest.prefetch();
+  const handleCalendarClick = () => {
+    setShowCalendar(true); // Switch to calendar view
+  };
+
+  const handleHomeClick = () => {
+    setShowCalendar(false); // Switch back to home view
+  };
 
   return (
-    <HydrateClient>
-      <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
-        <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
-          <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
-            Create <span className="text-[hsl(280,100%,70%)]">T3</span> App
-          </h1>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
-            <Link
-              className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 hover:bg-white/20"
-              href="https://create.t3.gg/en/usage/first-steps"
-              target="_blank"
-            >
-              <h3 className="text-2xl font-bold">First Steps →</h3>
-              <div className="text-lg">
-                Just the basics - Everything you need to know to set up your
-                database and authentication.
-              </div>
-            </Link>
-            <Link
-              className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 hover:bg-white/20"
-              href="https://create.t3.gg/en/introduction"
-              target="_blank"
-            >
-              <h3 className="text-2xl font-bold">Documentation →</h3>
-              <div className="text-lg">
-                Learn more about Create T3 App, the libraries it uses, and how
-                to deploy it.
-              </div>
-            </Link>
+    <div style={{ height: '100vh', margin: 0, padding: 0 }}>
+      {showCalendar ? (
+        <div style={{ 
+          height: '100%', 
+          backgroundColor: '#446486', // Full background color for calendar
+          position: 'relative' 
+        }}>
+          {/* Rectangle taking up 3/4 of the page from the bottom */}
+          <div style={{ 
+            position: 'absolute', 
+            bottom: 0, 
+            left: 0, 
+            width: '100%', 
+            height: '75%', 
+            backgroundColor: '#7197C1', 
+            borderTopLeftRadius: '35px', // Rounded corners at the top
+            borderTopRightRadius: '35px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}>
+            <h1 style={{ color: '#000' }}>Calendar</h1>
           </div>
-          <div className="flex flex-col items-center gap-2">
-            <p className="text-2xl text-white">
-              {hello ? hello.greeting : "Loading tRPC query..."}
-            </p>
-
-            <div className="flex flex-col items-center justify-center gap-4">
-              <p className="text-center text-2xl text-white">
-                {session && <span>Logged in as {session.user?.name}</span>}
-              </p>
-              <Link
-                href={session ? "/api/auth/signout" : "/api/auth/signin"}
-                className="rounded-full bg-white/10 px-10 py-3 font-semibold no-underline transition hover:bg-white/20"
-              >
-                {session ? "Sign out" : "Sign in"}
-              </Link>
-            </div>
-          </div>
-
-          {session?.user && <LatestPost />}
+          {/* Button to switch back to the Home view */}
+          <button onClick={handleHomeClick} style={{ 
+            padding: '10px 20px', 
+            cursor: 'pointer', 
+            position: 'absolute', 
+            top: '20px', 
+            right: '20px', 
+            borderRadius: '8px', 
+            border: 'none', 
+            backgroundColor: '#E0F3FF', 
+            color: '#446486', 
+            fontSize: '16px', 
+            fontWeight: 'bold', 
+            transition: 'background-color 0.3s',
+          }}>
+            Back to Home
+          </button>
         </div>
-      </main>
-    </HydrateClient>
+      ) : (
+        <main
+          style={{
+            display: 'flex',
+            flexDirection: 'column', // Align items in a column
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '100vh',
+            backgroundColor: '#7197C1', // Background color for home
+            fontFamily: 'sans-serif',
+          }}
+        >
+          <Logo /> {/* Add the Logo component here */}
+          <h1
+            style={{
+              margin: '20px 0 0', // Added margin for spacing
+              color: '#FFF', // Set text color to white
+              letterSpacing: '2.5px', // Adjust letter spacing as needed
+            }}
+          >
+            UFLORIDA
+          </h1>
+          {/* Button to switch to the Calendar view */}
+          <button onClick={handleCalendarClick} style={{ 
+            padding: '10px 20px', 
+            cursor: 'pointer', 
+            marginTop: '20px',
+            borderRadius: '8px', // Rounded corners
+            border: 'none', // No border
+            backgroundColor: '#6EAAEA',
+            color: '#FFF', // White text
+            fontSize: '16px', // Font size
+            fontWeight: 'bold', // Bold text
+            transition: 'background-color 0.3s', // Smooth transition
+          }}>
+            Log In
+          </button>
+        </main>
+      )}
+    </div>
   );
 }
