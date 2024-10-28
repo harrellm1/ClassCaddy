@@ -7,7 +7,7 @@ import { courseRouter } from "./routers/course";
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
-  course: courseRouter,
+  post: postRouter,
 });
 
 // export type definition of API
