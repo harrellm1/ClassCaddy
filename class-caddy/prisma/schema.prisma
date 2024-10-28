@@ -14,17 +14,18 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Post {
-    id        Int      @id @default(autoincrement())
-    name      String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
 
-    createdBy   User   @relation(fields: [createdById], references: [id])
-    createdById String
+//model Post {
+   // id        Int      @id @default(autoincrement())
+    //name      String
+    //createdAt DateTime @default(now())
+    //updatedAt DateTime @updatedAt
 
-    @@index([name])
-}
+   // createdBy   User   @relation(fields: [createdById], references: [id])
+    //createdById String
+
+   // @@index([name])
+//}
 
 // Necessary for Next auth
 model Account {
@@ -34,11 +35,11 @@ model Account {
     provider                 String
     providerAccountId        String
     refresh_token            String? @db.Text
-    access_token             String? // @db.Text
+    access_token             String? @db.Text
     expires_at               Int?
     token_type               String?
     scope                    String?
-    id_token                 String? // @db.Text
+    id_token                 String?  @db.Text
     session_state            String?
     user                     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
     refresh_token_expires_in Int?
@@ -54,15 +55,25 @@ model Session {
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+
 model User {
     id            String    @id @default(cuid())
-    name          String?
-    email         String?   @unique
+    name          String
+    email         String   @unique
     emailVerified DateTime?
     image         String?
     accounts      Account[]
     sessions      Session[]
-    posts         Post[]
+    courses       Course []
+}
+
+model Course {
+    id                  Int @id @default(autoincrement())
+    courseNumber        String 
+    courseName          String
+    courseInstructor    String
+    student             User @relation(fields:[studentId], references:[id])
+    studentId           String
 }
 
 model VerificationToken {
@@ -72,3 +83,5 @@ model VerificationToken {
 
     @@unique([identifier, token])
 }
+
+
