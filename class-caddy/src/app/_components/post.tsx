@@ -16,7 +16,12 @@ export function LatestPost() {
     },
   });
 
+  //const studentCreate = api.post.addStudent.useMutation();
+  //studentCreate.mutate({firstname: "monica", lastname: 'harrell', email: 'test@test.edu', password: '12345678'});
+
   return (
+
+
     <div className="w-full max-w-xs">
       {latestPost ? (
         <p className="truncate">Your most recent post: {latestPost.name}</p>
