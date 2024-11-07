@@ -25,4 +25,14 @@ model Student {
     lastName    String
     email       String  @unique
     password    String  
+    courses     Course[]
+}
+
+model Course {
+    id                  String @id @default(cuid())
+    courseNumber        String
+    courseName          String
+    courseInstructor    String
+    student             Student @relation(fields: [studentId], references:[email])
+    studentId           String 
 }
