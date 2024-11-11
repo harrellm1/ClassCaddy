@@ -11,7 +11,9 @@ import {Dialog} from '@headlessui/react'
 import { LatestPost } from "~/app/_components/post";
 //import { getServerAuthSession } from "~/server/auth";
 //import { api, HydrateClient } from "~/trpc/server";
-import { ExclamationTriangleIcon } from "@heroicons/react/16/solid";
+import { CheckIcon, ExclamationTriangleIcon } from "@heroicons/react/16/solid";
+import { set } from "zod";
+import { EventSourceInput } from "@fullcalendar/core/index.js";
 
 interface Event{
 title: string;
@@ -30,7 +32,7 @@ export default function Home() {
   ])
   
   const[allEvents, setAllEvents] = useState<Event[]>([])
-  const [showmodal, setShowModal] = useState(false)
+  const [showModal, setShowModal] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [idToDelete, setIdToDelete] = useState<number | null>(null)
   const[newEvent, setNewEvent] = useState<Event>({
@@ -44,6 +46,11 @@ export default function Home() {
   function handleDateClick(arg: {date: Date, allDay: boolean}){
     setNewEvent({...newEvent, start: arg.date, allDay: arg.allDay, id: new Date().getTime()})
     setShowModal(true)}
+
+  function addEvent(data: DropArg){
+    const event = {...newEvent, start: data.date.toISOString(), title:data.draggedEl.innerText, allDay: data.allDay, id:new Date().getTime()}
+    setAllEvents([...allEvents, event])
+  }
 
   function handleDeleteModal(data: {event: {id:string}}){
     setShowDeleteModal(true);
@@ -66,6 +73,26 @@ export default function Home() {
       id:0
     })
   }
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    setNewEvent({
+      ...newEvent,
+      title: e.target.value
+    })
+  }
+
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>){
+    e.preventDefault()
+    setAllEvents([...allEvents, newEvent])
+    setShowModal(false)
+    setNewEvent({
+      title:'',
+      start:'',
+      allDay: false,
+      id:0
+    })
+  }
+
    return (
     <div>
       <nav className = "flex justify-between mb-12 border-b border-violet-100 p-4">
@@ -87,13 +114,14 @@ export default function Home() {
                   right: 'resourceTimelineWork, dayGridMonth,timeGridWeek, timeGridDay'
 
                 }}
-                events={[]}
+                events={allEvents as EventSourceInput}
                 nowIndicator={true}
                 editable={true}
                 droppable={true}
                 selectable={true}
                 selectMirror={true}
                 dateClick={handleDateClick}
+                drop={(data) => addEvent(data)}
                 eventClick={(data)=>handleDeleteModal(data)}
 
             />
@@ -156,7 +184,45 @@ export default function Home() {
                   </div>
             </Dialog>
           </Transition>
-      </main>
+          <Transition show={showModal} as ={Fragment}>
+            <Dialog as="div" className="relative z-10" onClose={setShowModal}>
+              <TransitionChild as={Fragment} enter="ease-out duration-300" enterFrom="opacity-0" enterTo="opacity-100" leave="ease-in duration-200" leaveFrom="opacity-100" leaveTo="opacity-0">
+                  <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"/>
+              </TransitionChild>
+              <div className="fixed inset-0 z-10 overflow-y-auto">
+                <div className="flex min-h-full items-end justify-center p-4 text-center p-4 text-center sm:items-center">
+                  <TransitionChild as={Fragment} enter="ease-out duration-300" enterFrom="opacity-0" enterTo="opacity-100" leave="ease-in duration-200" leaveFrom="opacity-100" leaveTo="opacity-0">
+                    <DialogPanel className="relative transform overflow-hidden rounded-lg bg-white px-4">
+                      <div>
+                        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-white">
+                          <CheckIcon className="h-6 w-6 text-green-600" aria-hidden="true"/>
+                        </div>
+                        <div className="mt-3 text-center sm:mt-5">
+                          <DialogTitle as="h3" className="text-base front-semibold leading-6 text-gray-90">
+                            Add Event
+                          </DialogTitle>
+                          <form action="submit" onSubmit={handleSubmit}>
+                            <div className="mt-2">
+                              <input type="text" name="title" className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-violet-600 sm:text-sm sm:leading-6" value={newEvent.title} onChange={(e) => handleChange(e)} placeholder="Title"/>
+                            </div>
+                            <div className="mt-5 sm:mt-6 sm:grid-flow-row-dense sm:grid-cols-2">
+                              <button type="submit" className="inlne-flex w-full justify-center rounded-md bg-violet-600 px-3 py-2 text:sm font-semibold text-white shadow-sm hover:bg-violet-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600 sm:col-start-2 disabled:opacity-25" disabled={newEvent.title ===''}>
+                                Create
+                              </button>
+                              <button type="button" className="mt-3 inline-flex w-full justify-center rounded-md bg-white" onClick={handleCloseModal}>
+                                Cancel
+                              </button>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                    </DialogPanel>
+                  </TransitionChild>
+                </div>
+              </div>
+            </Dialog>
+          </Transition>
+       </main>
     </div>
   );
 }
