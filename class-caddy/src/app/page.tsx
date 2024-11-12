@@ -27,9 +27,7 @@ export default function Home() {
   //const session = await getServerAuthSession();
 
   //void api.post.getLatest.prefetch();
-  const[events, setEvents] = useState([
-    {title: 'event 1', id: '1'}
-  ])
+
   
   const[allEvents, setAllEvents] = useState<Event[]>([])
   const [showModal, setShowModal] = useState(false)
@@ -72,6 +70,8 @@ export default function Home() {
       allDay:false,
       id:0
     })
+    setShowDeleteModal(false);
+    setIdToDelete(null);
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
