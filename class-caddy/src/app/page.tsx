@@ -1,13 +1,11 @@
-import { api, HydrateClient } from "~/trpc/server";
-import Login from "./_components/home";
-
-export default async function Home() {
-
+import {HydrateClient } from "~/trpc/server";
+import HomeComponent from "./_components/home";
+export default async function Home(){
   return (
     <HydrateClient>
       <main >
         <div>
-          <Login />
+          <HomeComponent />
         </div>
       </main>
     </HydrateClient>

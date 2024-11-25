@@ -9,7 +9,7 @@ export const userRouter = createTRPCRouter({
       email: z.string(),
       password: z.string(),
     })).mutation(async({ctx,input}) => {
-      const newUser = ctx.db.student.create({
+      const newUser = await ctx.db.student.create({
         data: {
           firstName: input.firstname,
           lastName: input.lastname,
@@ -22,16 +22,16 @@ export const userRouter = createTRPCRouter({
 
   getUser: publicProcedure.input(z.object({useremail: z.string(),
       password: z.string()
-    })).query(async ({ ctx,input }) => {
+    })).mutation(async ({ ctx,input }) => {
       const user = await ctx.db.student.findUnique({
         where: {
           email: input.useremail,
-          password: input.password
+          //password: input.password
 
         }
       });
   
-      return user ?? null;
+      return user;
     }),
 
     deleteUser:publicProcedure.input(z.object({useremail: z.string(), password:z.string()})).mutation(async({ctx,input}) =>{
