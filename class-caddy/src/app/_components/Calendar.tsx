@@ -15,7 +15,7 @@ interface Event {
   id: number;
 }
 
-export default function Calendar() {
+export default function Calendar({ goToNextPage }: { goToNextPage: (page: string) => void }) {
   const [allEvents, setAllEvents] = useState<Event[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -27,6 +27,10 @@ export default function Calendar() {
     id: 0
   });
   const [currentPage, setCurrentPage] = useState("calendar"); // Use state to switch between views
+  function toggleView(view: string) {
+    setCurrentPage(view);
+  }
+  
 
   // Handle clicking on the calendar date
   function handleDateClick(arg: { date: Date, allDay: boolean }) {
@@ -61,10 +65,6 @@ export default function Calendar() {
     setIdToDelete(null);
   }
 
-  // Function to toggle between calendar and premium views
-  function toggleView(view: string) {
-    setCurrentPage(view);
-  }
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: '#446486' }}>
@@ -124,145 +124,163 @@ export default function Calendar() {
         />
       )}
 
-      {/* Premium Content View */}
-      {currentPage === "premium" && (
-        <div 
+    {/* Premium Content View */}
+    {currentPage === "premium" && (
+      <div
         style={{
-          position: 'fixed',
+          position: "fixed",
           top: 0,
           left: 0,
-          width: '100%',
-          height: '100%',
-          backgroundColor: '#446486',
-          color: '#fff',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
+          width: "100%",
+          height: "100%",
+          backgroundColor: "#446486",
+          color: "#fff",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
           zIndex: 9999,
-          padding: '20px',
+          padding: "20px",
         }}
       >
-        <h2 style={{ 
-          fontSize: '30px', 
-          fontWeight: 'bold', 
-          marginBottom: '20px', 
-          textAlign: 'center',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          gap: '10px'
-        }}>
+        <h2
+          style={{
+            fontSize: "30px",
+            fontWeight: "bold",
+            marginBottom: "20px",
+            textAlign: "center",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: "10px",
+          }}
+        >
           Get More Done
-          <Logo style={{ width: '40px', margin: '10px 0', verticalAlign: 'middle' }} />
-          <span style={{ fontSize: '60px', color: '#FFD700', fontWeight: 'bold' }}>Premium</span>
+          <Logo style={{ width: "40px", margin: "10px 0", verticalAlign: "middle" }} />
+          <span style={{ fontSize: "60px", color: "#FFD700", fontWeight: "bold" }}>Premium</span>
         </h2>
-        
+
         {/* Bulleted list with special features */}
-        <ul style={{ fontSize: '18px', color: '#eee', maxWidth: '600px', textAlign: 'left', marginBottom: '40px', listStyleType: 'disc' }}>
+        <ul
+          style={{
+            fontSize: "18px",
+            color: "#eee",
+            maxWidth: "600px",
+            textAlign: "left",
+            marginBottom: "40px",
+            listStyleType: "disc",
+          }}
+        >
           <li>Special Calendars for Athletes</li>
           <li>Form Good Habits with Habit Tracker</li>
-          <li>Set Goals & Reminders for Goals</li>
+          <li>Set Goals & Reminders</li>
         </ul>
-        
-        <div 
+
+        <div
           style={{
-            display: 'flex',
-            flexDirection: 'row',  // Change to 'row' to display boxes horizontally
-            justifyContent: 'center',
-            alignItems: 'center',
-            gap: '20px',  // Space between boxes
-            width: '100%',
+            display: "flex",
+            flexDirection: "row", // Display boxes horizontally
+            justifyContent: "center",
+            alignItems: "center",
+            gap: "20px", // Space between boxes
+            width: "100%",
           }}
         >
           {/* Monthly Plan Box */}
-          <div 
+          <div
+            onClick={() => goToNextPage("payment")} // Navigate to payment page
             style={{
-              width: '343.589px',
-              height: '126.717px',
+              width: "343.589px",
+              height: "126.717px",
               flexShrink: 0,
-              borderRadius: '9px',
-              background: '#7197C1',
-              boxShadow: '0px 4px 4px 0px rgba(0, 0, 0, 0.25)',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
-              textAlign: 'center',
-              padding: '20px',
+              borderRadius: "9px",
+              background: "#7197C1",
+              boxShadow: "0px 4px 4px 0px rgba(0, 0, 0, 0.25)",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              textAlign: "center",
+              padding: "20px",
+              cursor: "pointer",
             }}
           >
-            <h3 style={{ fontSize: '20px', fontWeight: 'bold' }}>Monthly Subscription</h3>
-            <p style={{ fontSize: '14px', color: '#fff' }}>
+            <h3 style={{ fontSize: "20px", fontWeight: "bold" }}>Monthly Subscription</h3>
+            <p style={{ fontSize: "14px", color: "#fff" }}>
               Flexible! Try ClassCaddy Premium for just $3.99 a month. Cancel anytime!
             </p>
           </div>
-  
+
           {/* Yearly Plan Box */}
-          <div 
+          <div
+            onClick={() => goToNextPage("payment")} // Navigate to payment page
             style={{
-              width: '343.589px',
-              height: '126.717px',
+              width: "343.589px",
+              height: "126.717px",
               flexShrink: 0,
-              borderRadius: '9px',
-              background: '#7197C1',
-              boxShadow: '0px 4px 4px 0px rgba(0, 0, 0, 0.25)',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
-              textAlign: 'center',
-              padding: '20px',
+              borderRadius: "9px",
+              background: "#7197C1",
+              boxShadow: "0px 4px 4px 0px rgba(0, 0, 0, 0.25)",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              textAlign: "center",
+              padding: "20px",
+              cursor: "pointer",
             }}
           >
-            <h3 style={{ fontSize: '20px', fontWeight: 'bold' }}>Yearly Subscription</h3>
-            <p style={{ fontSize: '14px', color: '#fff' }}>
+            <h3 style={{ fontSize: "20px", fontWeight: "bold" }}>Yearly Subscription</h3>
+            <p style={{ fontSize: "14px", color: "#fff" }}>
               Save 30%! Get full access for $12.99 a year.
             </p>
           </div>
-  
+
           {/* Lifetime Plan Box */}
-          <div 
+          <div
+            onClick={() => goToNextPage("payment")} // Navigate to payment page
             style={{
-              width: '343.589px',
-              height: '126.717px',
+              width: "343.589px",
+              height: "126.717px",
               flexShrink: 0,
-              borderRadius: '9px',
-              background: '#7197C1',
-              boxShadow: '0px 4px 4px 0px rgba(0, 0, 0, 0.25)',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
-              textAlign: 'center',
-              padding: '20px',
+              borderRadius: "9px",
+              background: "#7197C1",
+              boxShadow: "0px 4px 4px 0px rgba(0, 0, 0, 0.25)",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              textAlign: "center",
+              padding: "20px",
+              cursor: "pointer",
             }}
           >
-            <h3 style={{ fontSize: '20px', fontWeight: 'bold' }}>Lifetime Subscription</h3>
-            <p style={{ fontSize: '14px', color: '#fff' }}>
-            One-time payment of $49.99 for lifetime access to all features
+            <h3 style={{ fontSize: "20px", fontWeight: "bold" }}>Lifetime Subscription</h3>
+            <p style={{ fontSize: "14px", color: "#fff" }}>
+              One-time payment of $49.99 for lifetime access to all features
             </p>
           </div>
         </div>
-  
+
         <button
           onClick={() => toggleView("calendar")} // Go back to the calendar view
           style={{
-            padding: '12px 18px', 
-            backgroundColor: '#446486', 
-            color: '#fff', 
-            border: 'none', 
-            borderRadius: '4px', 
-            cursor: 'pointer', 
-            marginTop: '20px',
-            fontSize: '16px',
+            padding: "12px 18px",
+            backgroundColor: "#446486",
+            color: "#fff",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer",
+            marginTop: "20px",
+            fontSize: "16px",
           }}
         >
           Close
-          </button>
-        </div>
-      )}
+        </button>
+      </div>
+    )}
+
 
 {currentPage === "settings" && (
   <div
@@ -458,7 +476,7 @@ export default function Calendar() {
             padding: '7px 0',
           }}
         >
-          <h4 style={{ fontSize: '16px', fontWeight: 'bold' }}>Joelie Campana</h4>
+          <h4 style={{ fontSize: '16px', fontWeight: 'bold' }}>Joelie Campana | j.campana@ufl.edu</h4>
         </div>
 
         {/* Section 2: Alicia Grant */}
@@ -473,7 +491,7 @@ export default function Calendar() {
             padding: '7px 0',
           }}
         >
-          <h4 style={{ fontSize: '16px', fontWeight: 'bold' }}>Alicia Grant</h4>
+          <h4 style={{ fontSize: '16px', fontWeight: 'bold' }}>Alicia Grant | alicia.grant@ufl.edu</h4>
         </div>
 
         {/* Section 3: Kaitlyn Kilner */}
@@ -488,7 +506,7 @@ export default function Calendar() {
             padding: '7px 0',
           }}
         >
-          <h4 style={{ fontSize: '16px', fontWeight: 'bold' }}>Kaitlyn Kilner</h4>
+          <h4 style={{ fontSize: '16px', fontWeight: 'bold' }}>Kaitlyn Kilner | kaitlynkilner@ufl.edu</h4>
         </div>
 
         {/* Section 4: Monica Harrell */}
@@ -502,7 +520,7 @@ export default function Calendar() {
             padding: '7px 0',
           }}
         >
-          <h4 style={{ fontSize: '16px', fontWeight: 'bold' }}>Monica Harrell</h4>
+          <h4 style={{ fontSize: '16px', fontWeight: 'bold' }}>Monica Harrell | harrellm1@ufl.edu</h4>
         </div>
       </div>
 
