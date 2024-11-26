@@ -11,10 +11,17 @@ const SettingsPage = () => {
 
   const [name, setName] = useState(userData?.name || '');
   const [email, setEmail] = useState(userData?.email || '');
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    updateUser.mutate({ name, email });
+    updateUser.mutate(
+      { name, email },
+      {
+        onError: (err) => setError('Failed to update. Please try again later.'),
+        onSuccess: () => setError(null), // Reset error on success
+      }
+    );
   };
 
   if (!userData) return <p>Loading...</p>;

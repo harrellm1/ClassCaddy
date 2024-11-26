@@ -72,3 +72,48 @@ model VerificationToken {
 
     @@unique([identifier, token])
 }
+
+model Job {
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  shifts    Shift[]
+}
+
+model Shift {
+  id        Int      @id @default(autoincrement())
+  startTime DateTime
+  endTime   DateTime
+  jobId     Int
+  job       Job      @relation(fields: [jobId], references: [id])
+  weekId    Int
+  week      Week     @relation(fields: [weekId], references: [id])
+  hours     Hour[]
+}
+
+model Week {
+  id        Int      @id @default(autoincrement())
+  name      String
+  startDate DateTime
+  endDate   DateTime
+  shifts    Shift[]
+}
+
+model Hour {
+  id        Int      @id @default(autoincrement())
+  dayOfWeek String
+  startTime DateTime
+  endTime   DateTime
+  shiftId   Int
+  shift     Shift   @relation(fields: [shiftId], references: [id])
+}
+
+model Notification {
+  id        Int       @id @default(autoincrement())
+  userId    String    
+  content   String    
+  read      Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id])
+}
