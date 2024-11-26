@@ -368,18 +368,20 @@ export default function Calendar({ goToNextPage }: { goToNextPage: (page: string
           <h4 style={{ fontSize: '16px', fontWeight: 'bold' }}>First Day of the Week</h4>
         </div>
 
-        {/* Section 3: Reset */}
+        {/* Section 3: Account Settings*/}
         <div
+          onClick={() => goToNextPage("account")}
           style={{
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
             alignItems: 'center',
             width: '100%',
+            cursor: 'pointer',
             padding: '10px 0',
           }}
         >
-          <h4 style={{ fontSize: '16px', fontWeight: 'bold' }}>Reset</h4>
+          <h4 style={{ fontSize: '16px', fontWeight: 'bold' }}>Account Settings</h4>
         </div>
       </div>
 
