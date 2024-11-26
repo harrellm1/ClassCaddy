@@ -5,6 +5,7 @@ import Home from "./_components/Home";
 import Login from "./_components/Login";
 import Calendar from "./_components/Calendar";
 import Payment from "./_components/Payment";
+import Account from "./_components/Account";
 
 export default function Page() {
   const [currentPage, setCurrentPage] = useState("home");
@@ -20,6 +21,7 @@ export default function Page() {
       {currentPage === "login" && <Login goToNextPage={goToNextPage} />}
       {currentPage === "calendar" && <Calendar goToNextPage={goToNextPage} />}
       {currentPage === "payment" && <Payment goToNextPage={goToNextPage} />}
+      {currentPage === "account" && <Account goToNextPage={goToNextPage} />}
     </>
   );
 }
