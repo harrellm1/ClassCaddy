@@ -26,6 +26,8 @@ model Student {
     email       String  @unique
     password    String  
     courses     Course[]
+    paidPlan    Boolean @default(false)
+    nextPayment DateTime?
 }
 
 model Course {
