@@ -6,6 +6,7 @@ import Login from "./_components/Login";
 import Calendar from "./_components/Calendar";
 import Payment from "./_components/Payment";
 import Account from "./_components/Account";
+import Dashboard from "./_components/Dashboard";
 
 export default function Page() {
   const [currentPage, setCurrentPage] = useState("home");
@@ -22,6 +23,7 @@ export default function Page() {
       {currentPage === "calendar" && <Calendar goToNextPage={goToNextPage} />}
       {currentPage === "payment" && <Payment goToNextPage={goToNextPage} />}
       {currentPage === "account" && <Account goToNextPage={goToNextPage} />}
+      {currentPage === "dashboard" && <Dashboard goToNextPage={goToNextPage} />}
     </>
   );
 }
