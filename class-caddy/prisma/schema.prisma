@@ -72,3 +72,43 @@ model VerificationToken {
 
     @@unique([identifier, token])
 }
+
+model Athlete {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  events    Event[]
+  mealLogs  MealLog[]
+  procedures Procedure[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Event {
+  id        Int      @id @default(autoincrement())
+  name      String
+  date      DateTime
+  location  String
+  athletes  Athlete[]
+  createdAt DateTime @default(now())
+}
+
+model MealLog {
+  id        Int      @id @default(autoincrement())
+  athleteId Int
+  athlete   Athlete   @relation(fields: [athleteId], references: [id])
+  date      DateTime
+  meal      String
+  calories  Int
+  createdAt DateTime @default(now())
+}
+
+model Procedure {
+  id          Int      @id @default(autoincrement())
+  athleteId   Int
+  athlete     Athlete   @relation(fields: [athleteId], references: [id])
+  procedure   String
+  date        DateTime
+  completed   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+}
