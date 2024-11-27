@@ -101,6 +101,22 @@ export default function Calendar({ goToNextPage }: { goToNextPage: (page: string
         ⚙️ {/* Gear Icon */}
       </div>
 
+      {/* Dashboard Button */}
+      <div 
+        style={{
+          position: 'absolute',
+          top: '34px',
+          left: '120px',
+          width: '130px',
+          height: '100px',
+          fontSize: '46px',
+          cursor: 'pointer',
+        }}
+        onClick={() => goToNextPage("dashboard")}
+      >
+        🏠 {/* Dashboard icon */}
+      </div>
+
       {/* Calendar View */}
       {currentPage === "calendar" && (
         <FullCalendar
@@ -459,7 +475,7 @@ export default function Calendar({ goToNextPage }: { goToNextPage: (page: string
           background: '#7197C1',
           boxShadow: '0px 4px 4px 0px rgba(0, 0, 0, 0.25)',
           display: 'flex',
-          flexDirection: 'column', // Stack sections vertically
+          flexDirection: 'column',
           justifyContent: 'space-between',
           alignItems: 'center',
           textAlign: 'center',
