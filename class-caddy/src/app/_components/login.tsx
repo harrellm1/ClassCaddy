@@ -5,7 +5,12 @@ import { useRouter } from "next/navigation";
 import Logo from "../_components/logo";
 import { Student } from "@prisma/client";
 import { log } from "console";
-export default function Login() {
+import Dashboard from "./dashboard";
+export default function Login({login
+    , goToNextPage}:
+    {login: (user:Student) => void;
+        goToNextPage:(page:string) => void
+    }) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const studentSearch= api.user.getUser.useMutation();
@@ -61,8 +66,8 @@ export default function Login() {
                         if(student) {
                             if (student.password == password){
                                 const loggedInUser:Student = student;
-                                localStorage.setItem('user', JSON.stringify(loggedInUser));
-                                router.push('/dashboard');
+                                login(student);
+                                goToNextPage("dashboard");
                             }
                             else{
                                 alert('Invalid credentials');

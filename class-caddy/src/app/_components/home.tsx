@@ -1,7 +1,8 @@
 'use client';
 import { useRouter } from "next/navigation";
 import Logo from './logo'
-export default async function HomeComponent() {
+export default function HomeComponent({goToNextPage}:{goToNextPage:(page:string)=>void}) {
+
   const router = useRouter();
   return(
     <main
@@ -19,7 +20,7 @@ export default async function HomeComponent() {
           <h1 style={{ margin: '20px 0 0', color: '#FFF', letterSpacing: '2.5px' }}>
             UFLORIDA
           </h1>
-          <button onClick={() => router.push('/login')} style={{
+          <button onClick={() => goToNextPage("login")} style={{
             padding: '10px 20px',
             cursor: 'pointer',
             marginTop: '20px',
@@ -35,7 +36,7 @@ export default async function HomeComponent() {
           </button>
 
 
-          <button onClick={() => router.push('/register')} style={{
+          <button onClick={() => goToNextPage('register')} style={{
             padding: '10px 20px',
             cursor: 'pointer',
             marginTop: '20px',
