@@ -32,7 +32,9 @@ export default function Page() {
     firstName: 'dummy',
     lastName: 'dumdum',
     email: 'dummy.data@dummy.com',
-    password:'dummydumum'
+    password:'dummydumum',
+    paidPlan: false,
+    nextPayment: null
   }
   const login = (user:Student) => {
     setUser(user);

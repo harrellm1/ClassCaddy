@@ -4,17 +4,16 @@ import { api } from "~/trpc/react";
 import { useRouter } from "next/navigation";
 import Logo from "../_components/logo";
 import { Student } from "@prisma/client";
-import { log } from "console";
-import Dashboard from "./dashboard";
-export default function Login({login
-    , goToNextPage}:
+export default function Login(
+    {login,
+    goToNextPage}:
     {login: (user:Student) => void;
         goToNextPage:(page:string) => void
     }) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const studentSearch= api.user.getUser.useMutation();
-    const router = useRouter();
+    const studentSearch= api.user.signIn.useMutation();
+    
     return(
         <div style={{ 
             display: 'flex', 
@@ -63,8 +62,7 @@ export default function Login({login
                         
                         try{                       
                             console.log(studentSearch);
-                        if(student) {
-                            if (student.password == password){
+                            if(student) {
                                 const loggedInUser:Student = student;
                                 login(student);
                                 goToNextPage("dashboard");
@@ -74,11 +72,8 @@ export default function Login({login
                                 setEmail("");
                                 setPassword("");
                             }                      
-                        }
-                        else {
-                            alert("User does not exist");
-                            router.push('/register');
-                        }
+                    
+                        
                         }
                         catch(error){
                             console.log("Error during login: ", error);

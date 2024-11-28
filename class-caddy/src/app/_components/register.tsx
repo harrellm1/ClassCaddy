@@ -1,10 +1,8 @@
 'use client';
 import { api } from "~/trpc/react";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Logo from "../_components/logo";
 export default function Register({goToNextPage}:{goToNextPage:(page:string) => void}) {
-  const router = useRouter();
   const studentAdd = api.user.addStudent.useMutation();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");

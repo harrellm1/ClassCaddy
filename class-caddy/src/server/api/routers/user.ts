@@ -1,5 +1,6 @@
+import { privateDecrypt } from "crypto";
 import { z } from "zod";
-
+import { argon2d, hash, verify } from "argon2";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 export const userRouter = createTRPCRouter({
@@ -14,22 +15,29 @@ export const userRouter = createTRPCRouter({
           firstName: input.firstname,
           lastName: input.lastname,
           email: input.email,
-          password: input.password
+          password: await hash(input.password),
+          paidPlan: false,
         },
       });
       return newUser ?? null;
     }),
 
-  getUser: publicProcedure.input(z.object({useremail: z.string(),
+  signIn: publicProcedure.input(z.object({useremail: z.string(),
       password: z.string()
     })).mutation(async ({ ctx,input }) => {
       const user = await ctx.db.student.findUnique({
         where: {
           email: input.useremail,
-          //password: input.password
-
         }
       });
+      if(!user) {
+        return null;
+      }
+
+      const isValidPW = await verify(user.password, input.password);
+      if(!isValidPW) {
+        return null;
+      }
   
       return user;
     }),
