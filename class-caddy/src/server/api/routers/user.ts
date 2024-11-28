@@ -1,3 +1,4 @@
+import { subscribe } from "diagnostics_channel";
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
@@ -14,7 +15,8 @@ export const userRouter = createTRPCRouter({
           firstName: input.firstname,
           lastName: input.lastname,
           email: input.email,
-          password: input.password
+          password: input.password,
+          paidPlan: false
         },
       });
       return newUser ?? null;
@@ -41,4 +43,17 @@ export const userRouter = createTRPCRouter({
         }
       })
     }),
+
+    subscribe: publicProcedure.input(z.string()).mutation(async({ctx, input}) => {
+      const plan = await ctx.db.student.update({
+        where: {
+          email: input
+        },
+        data: {
+          paidPlan: true
+        },
+      });
+        
+      return plan ?? null;
+    })
 });

@@ -20,6 +20,7 @@
 import { Student} from "@prisma/client";
 import Login from "./_components/login";
 import { useState } from "react";
+import Payment from "./_components/payment";
 import HomeComponent from "./_components/home";
 import Dashboard from "./_components/dashboard";
 import { student } from "~/types/usertype";
@@ -32,7 +33,9 @@ export default function Page() {
     firstName: 'dummy',
     lastName: 'dumdum',
     email: 'dummy.data@dummy.com',
-    password:'dummydumum'
+    password:'dummydumum',
+    paidPlan: false,
+    nextPayment: null
   }
   const login = (user:Student) => {
     setUser(user);
@@ -56,6 +59,7 @@ export default function Page() {
       {currentPage === 'login' && <Login login = {login}  goToNextPage = {goToNextPage}/>}
       {currentPage === 'dashboard' && <Dashboard logout = {logOut} student = {user} goToNextPage={goToNextPage}/>}
       {currentPage === 'register' && <Register goToNextPage={goToNextPage}/>}
+      {currentPage === 'payment' && <Payment user = {user} goToNextPage={goToNextPage} />}
     </>
   )
 
