@@ -72,3 +72,18 @@ model VerificationToken {
 
     @@unique([identifier, token])
 }
+
+model Assignment {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  dueDate     DateTime
+  completed   Boolean  @default(false)
+  userId      String   // FK to User
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user        User     @relation(fields: [userId], references: [id])
+
+  @@index([userId]) // Optimized for querying by user
+}
