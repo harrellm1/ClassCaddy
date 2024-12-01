@@ -26,8 +26,10 @@ model Student {
     email       String  @unique
     password    String  
     courses     Course[]
+    classtimes  ClassTime[]
     nextPayment DateTime?
     paidPlan    Boolean
+    events      CalEvent[]
 }
 
 model Course {
@@ -36,5 +38,33 @@ model Course {
     courseName          String
     courseInstructor    String
     student             Student @relation(fields: [studentId], references:[email])
-    studentId           String 
+    studentId           String
+    classtimes          ClassTime[] 
+    Semester            String
+    Year                Int
+}
+
+
+model ClassTime {
+    id          String @id @default(cuid())
+    courseId    String
+    studentId   String
+    course      Course @relation(fields: [courseId], references: [id])
+    student     Student @relation(fields:[studentId], references: [email])
+    day         Int //0 = sunday, 6 = saturday
+    Period      Int  //enter 6 for period 6
+
+}
+
+model CalEvent {
+    id      String  @id @default(cuid())
+    title   String
+    studentId   String
+    student     Student @relation(fields: [studentId], references: [email])
+    start       DateTime
+    end         DateTime
+    allDay      Boolean
+    tag         String
+    recurrence  String?
+    recurrenceEnd   DateTime?
 }

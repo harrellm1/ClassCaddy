@@ -1,9 +1,6 @@
 'use client';
-import { useRouter } from "next/navigation";
 import Logo from './logo'
 export default function HomeComponent({goToNextPage}:{goToNextPage:(page:string)=>void}) {
-
-  const router = useRouter();
   return(
     <main
           style={{

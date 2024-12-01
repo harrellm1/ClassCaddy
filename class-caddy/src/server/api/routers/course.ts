@@ -8,12 +8,28 @@ export const courseRouter = createTRPCRouter({
       courseName: z.string(),
       courseInstructor: z.string(),
       courseNumber: z.string(),
+      semester: z.string(),
+      year: z.number()
     })).mutation(async({ctx,input}) => {
-      return ctx.db.course.create({
+
+      const foundCourse = await ctx.db.course.findFirst({where: {
+        studentId: input.studentEmail,
+        courseNumber:input.courseNumber
+      }}
+          
+     
+      )
+
+      if(foundCourse) {
+        return null;
+      }
+      const newCourse = await ctx.db.course.create({
         data: {
           courseNumber: input.courseNumber,
           courseName: input.courseName,
           courseInstructor: input.courseInstructor,
+          Semester: input.semester,
+          Year: input.year,
           student:{
               connect: {
                 email:input.studentEmail
@@ -22,16 +38,43 @@ export const courseRouter = createTRPCRouter({
 
         },
       });
+
+      return newCourse ?? null;
     }),
 
-  getCourses: publicProcedure.input(z.string()).query(async ({ ctx,input }) => {
-      const courses = await ctx.db.student.findMany({
+  getCourses: publicProcedure.input(z.string()).mutation(async ({ ctx,input }) => {
+      const courses = await ctx.db.course.findMany({
         where: {
-          email:input
+          studentId:input
 
         }
       });
   
       return courses ?? null;
     }),
+
+    getCourseName: publicProcedure.input(z.string()).mutation(async ({ ctx,input }) => {
+      const course = await ctx.db.course.findUnique({
+        where: {
+          id:input
+
+        }
+      });
+
+      if(course) {
+        return course.courseNumber
+      }
+      return null
+    }),
+
+    getSingleCourse: publicProcedure.input(z.object({email: z.string(), number: z.string()})).mutation(async({ctx,input}) => {
+        const course = await ctx.db.course.findFirst({
+          where: {
+            studentId: input.email,
+            courseNumber: input.number
+          }
+        })
+
+        return course ?? null;
+    })
 });

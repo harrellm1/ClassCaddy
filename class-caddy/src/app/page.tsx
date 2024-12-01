@@ -23,8 +23,9 @@ import { useState } from "react";
 import Payment from "./_components/payment";
 import HomeComponent from "./_components/home";
 import Dashboard from "./_components/dashboard";
-import { student } from "~/types/usertype";
 import Register from "./_components/register";
+import Courses from "./_components/courses";
+import CalendarApp from "./_components/calendar";
 export default function Page() {
   const [user, setUser] = useState<Student | null> (null);
   const [currentPage, setCurrentPage] = useState("home");
@@ -60,6 +61,8 @@ export default function Page() {
       {currentPage === 'dashboard' && <Dashboard logout = {logOut} student = {user} goToNextPage={goToNextPage}/>}
       {currentPage === 'register' && <Register goToNextPage={goToNextPage}/>}
       {currentPage === 'payment' && <Payment user = {user} goToNextPage={goToNextPage} />}
+      {currentPage === 'courses' && <Courses user={user} goToNextPage={goToNextPage}/>}
+      {currentPage === 'calendar' && <CalendarApp user={user} />}  
     </>
   )
 

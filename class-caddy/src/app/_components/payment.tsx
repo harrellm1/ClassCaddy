@@ -14,7 +14,7 @@ export default function Payment({ user, goToNextPage }: { user:Student | null, g
     if (selectedPlan && cardDetails.cardNumber && loginInfo.email) {
       if(user) {
         if((user.email === loginInfo.email) && (user.password === loginInfo.password)){
-          const student = await subscribe.mutateAsync(user.email);
+          await subscribe.mutateAsync(user.email);
           alert(`Payment for the ${selectedPlan} plan has been processed.`);
           goToNextPage("dashboard");
         }
@@ -156,7 +156,7 @@ export default function Payment({ user, goToNextPage }: { user:Student | null, g
 
       {/* Cancel Button */}
       <button
-        onClick={() => goToNextPage("calendar")}
+        onClick={() => goToNextPage("dashboard")}
         style={{
           marginTop: "20px",
           padding: "10px 20px",
