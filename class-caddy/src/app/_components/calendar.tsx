@@ -118,13 +118,15 @@ export default function Calendar({user}:{user:Student | null}) {
 
    return (
     <div>
-      <nav className = "flex justify-between mb-12 border-b border-violet-100 p-4">
-        <h1 className="font-bold text-2x1 text-gray-700">
-          Calendar
-        </h1>"
-      </nav>
-      <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#abb2b9] to-[#eaecee] text-black">
-        <div className="grid grid-cols-10">
+      <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#7197C1] to-[#446486] text-white">
+        <nav className="flex justify-end items-center mb-12 w-full max-w-screen-xl mx-auto px-4">
+          <div className="flex space-x-4">
+            <button className="text-white bg-[#2a3a50] hover:bg-[#DDA600] px-4 py-2 rounded-md">Settings</button>
+            <button className="text-white bg-[#2a3a50] hover:bg-[#DDA600] px-4 py-2 rounded-md">Premium</button>
+            <button className="text-white bg-[#2a3a50] hover:bg-[#DDA600] px-4 py-2 rounded-md">Dashboard</button>
+          </div>
+        </nav>
+      <div className="grid grid-cols-10">
           <div className="col-span-8">
             <FullCalendar
               plugins={[
@@ -134,9 +136,15 @@ export default function Calendar({user}:{user:Student | null}) {
                 headerToolbar={{
                   left: 'prev, next, today',
                   center: 'title',
-                  right: 'resourceTimelineWork, dayGridMonth,timeGridWeek, timeGridDay'
-
+                  right: 'dayGridMonth,timeGridWeek,timeGridDay'
                 }}
+                buttonText={{
+                  today: 'Today',
+                  day: 'Day',
+                  week: 'Week',
+                  month: 'Month',
+                }}
+              
                 events={allEvents as EventSourceInput}
                 nowIndicator={true}
                 editable={true}
@@ -219,18 +227,18 @@ export default function Calendar({user}:{user:Student | null}) {
               <div className="fixed inset-0 z-10 overflow-y-auto">
                 <div className="flex min-h-full items-end justify-center p-4 text-center p-4 text-center sm:items-center">
                   <TransitionChild as={Fragment} enter="ease-out duration-300" enterFrom="opacity-0" enterTo="opacity-100" leave="ease-in duration-200" leaveFrom="opacity-100" leaveTo="opacity-0">
-                    <DialogPanel className="relative transform overflow-hidden rounded-lg bg-white px-4">
+                    <DialogPanel className="relative transform overflow-hidden rounded-lg bg-white px-4 sm:w-[300px] sm:h-[595px]">
                       <div>
-                        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-white">
+                        {/* <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-white">
                           <CheckIcon className="h-6 w-6 text-green-600" aria-hidden="true"/>
-                        </div>
+                        </div> */}
                         <div className="mt-3 text-center sm:mt-5">
                           <DialogTitle as="h3" className="text-base front-semibold leading-6 text-gray-90">
                             Add Event
                           </DialogTitle>
                           <form action="submit" onSubmit={handleSubmit}>
-                            <div className="mt-2">
-                              <input type="text" name="title" className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-violet-600 sm:text-sm sm:leading-6" value={title} onChange={(e) => {setTitle(e.target.value)}} placeholder="Title"/>
+                            <div className="mt-2 mb-4">
+                              <input type="text" name="title" className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-violet-600 sm:text-sm sm:leading-6 pl-3" value={title} onChange={(e) => {setTitle(e.target.value)}} placeholder="Title"/>
                             </div>
                             <div className="mt-2">
                               <label htmlFor="tag">Tag</label>
@@ -246,10 +254,10 @@ export default function Calendar({user}:{user:Student | null}) {
                               </select>
                             </div>
                             <div className="mt-2">
-                              <input type="datetime-local" name="start time" className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-violet-600 sm:text-sm sm:leading-6" value = {start} onChange={(e)=> {setStart(e.target.value)}} placeholder="Start Date"/>
+                              <input type="datetime-local" name="start time" className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-violet-600 sm:text-sm sm:leading-6 pl-3" value = {start} onChange={(e)=> {setStart(e.target.value)}} placeholder="Start Date"/>
                             </div>
                             <div className="mt-2">
-                              <input type="datetime-local" name="end time" className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-violet-600 sm:text-sm sm:leading-6" value = {end} onChange={(e)=> {setEnd(e.target.value)}} placeholder="End Date"/>
+                              <input type="datetime-local" name="end time" className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-violet-600 sm:text-sm sm:leading-6 pl-3" value = {end} onChange={(e)=> {setEnd(e.target.value)}} placeholder="End Date"/>
                             </div>
                             <div className="mt-2">
                               <label>
@@ -263,7 +271,7 @@ export default function Calendar({user}:{user:Student | null}) {
                             </div>
                             <br></br>
                             
-                            <div className="mt-2">
+                            <div className="mt-0">
                               <label htmlFor="recurrence">Recurrence Pattern</label>
                               <select
                                 id="recurrence"
@@ -283,7 +291,7 @@ export default function Calendar({user}:{user:Student | null}) {
                               </select>
                             </div>
                             <br></br>
-                            <div className="mt-2">
+                            <div className="mt-0">
                               <label htmlFor="recurrence-end">Recurrence Ends</label>
                               <input
                                 type="date"
@@ -301,11 +309,11 @@ export default function Calendar({user}:{user:Student | null}) {
                             <br></br>
 
 
-                            <div className="mt-5 sm:mt-6 sm:grid-flow-row-dense sm:grid-cols-2">
-                              <button type="submit" className="inlne-flex w-full justify-center rounded-md bg-violet-600 px-3 py-2 text:sm font-semibold text-white shadow-sm hover:bg-violet-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600 sm:col-start-2 disabled:opacity-25">
+                            <div className="mt-5 sm:mt-0 sm:grid-flow-row-dense sm:grid-cols-2">
+                              <button type="submit" className="inlne-flex w-full justify-center rounded-md bg-[#6EAAEA] px-3 py-2 text:sm font-semibold text-white shadow-sm hover:bg-[#4163DF] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4163DF] sm:col-start-2 disabled:opacity-25">
                                 Create
                               </button>
-                              <button type="button" className="mt-3 inline-flex w-full justify-center rounded-md bg-white" onClick = {handleCloseModal}>
+                              <button type="submit" className="mt-3 inlne-flex w-full justify-center rounded-md bg-[#A33E3E] px-3 py-2 text:sm font-semibold text-white shadow-sm hover:bg-[#EC1010] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#EC1010] sm:col-start-2 disabled:opacity-25 onClick={handleCloseModal}">
                                 Cancel
                               </button>
                               <br></br>

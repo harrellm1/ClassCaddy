@@ -27,8 +27,8 @@ export default function Register({goToNextPage}:{goToNextPage:(page:string) => v
             flexDirection: 'column', 
             justifyContent: 'center', 
             flexShrink: 0,
-            color: '#F2EFEE',
-            marginTop: '80px',
+            color: '#FFFFFF',
+            marginTop: '30px',
             marginBottom: '10px',
             textAlign: 'center',
             fontSize: '60px',
@@ -84,7 +84,7 @@ export default function Register({goToNextPage}:{goToNextPage:(page:string) => v
                 placeholder="First Name" 
                 onChange={(e) =>setFirstName(e.target.value)}
                 style={{ 
-                  width: '184.224px', 
+                  width: '190px', 
                   height: '36.526px', 
                   borderRadius: '5px', 
                   border: '1px solid #ccc', 
@@ -99,7 +99,7 @@ export default function Register({goToNextPage}:{goToNextPage:(page:string) => v
                 placeholder="Last Name" 
                 onChange={(e) =>setLastName(e.target.value)}
                 style={{ 
-                  width: '184.224px', 
+                  width: '190px', 
                   height: '36.526px', 
                   borderRadius: '5px', 
                   border: '1px solid #ccc', 
@@ -114,7 +114,7 @@ export default function Register({goToNextPage}:{goToNextPage:(page:string) => v
                 placeholder="Email" 
                 onChange={(e) =>setEmail(e.target.value)}
                 style={{ 
-                  width: '184.224px', 
+                  width: '190px', 
                   height: '36.526px', 
                   borderRadius: '5px', 
                   border: '1px solid #ccc', 
@@ -129,7 +129,7 @@ export default function Register({goToNextPage}:{goToNextPage:(page:string) => v
                 placeholder="Password" 
                 onChange={(e) =>setPassword(e.target.value)}
                 style={{ 
-                  width: '184.224px', 
+                  width: '190px', 
                   height: '36.526px', 
                   borderRadius: '5px', 
                   border: '1px solid #ccc', 
@@ -139,13 +139,27 @@ export default function Register({goToNextPage}:{goToNextPage:(page:string) => v
                 }} 
               />
 
-              <button
-                type="submit"
-                className="rounded-full bg-white/10 px-10 py-3 font-semibold transition hover:bg-white/20"
-                disabled = {studentAdd.isPending}
-              >
-                {studentAdd.isPending? "Submitting" : "Submit"}
-              </button>
+            <button
+              type="submit"
+              className="rounded-full bg-white/10 px-10 py-3 font-semibold transition hover:bg-white/20"
+              disabled={studentAdd.isPending}
+              style={{
+                padding: '10px 20px',
+                cursor: 'pointer',
+                marginTop: '0px',
+                width: '190px',
+                borderRadius: '8px',
+                border: 'none',
+                backgroundColor: '#6EAAEA',
+                color: '#FFF',
+                fontSize: '16px',
+                fontWeight: 'bold',
+                transition: 'background-color 0.3s',
+              }}
+            >
+              {studentAdd.isPending ? "Submitting" : "Submit"}
+            </button>
+
                 
 
             </div>
