@@ -118,40 +118,82 @@ export default function Calendar({user}:{user:Student | null}) {
 
    return (
     <div>
-      <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#7197C1] to-[#446486] text-white">
-        
-      <div className="grid grid-cols-10">
-          <div className="col-span-8">
-            <FullCalendar
-              plugins={[
-                dayGridPlugin,
-                interactionPlugin,
-                timeGridPlugin]}
-                headerToolbar={{
-                  left: 'prev, next, today',
-                  center: 'title',
-                  right: 'dayGridMonth,timeGridWeek,timeGridDay'
-                }}
-                buttonText={{
-                  today: 'Today',
-                  day: 'Day',
-                  week: 'Week',
-                  month: 'Month',
-                }}
-              
-                events={allEvents as EventSourceInput}
-                nowIndicator={true}
-                editable={true}
-                droppable={true}
-                selectable={true}
-                selectMirror={true}
-                dateClick={handleDateClick}
-                eventClick={(data)=>handleEditModal(data)}
+    <main className="flex min-h-screen flex-col items-center justify-center bg-[#7197C1] text-white">
+    <div className="w-full h-4 bg-[#7197C1]"></div> {/* This creates the short white space */}
 
-            />
+      <div className="flex items-center justify-center space-x-4">
+        <div className="w-20 h-20 bg-[#446486] rounded-full flex items-center justify-center">
+        </div>
+        <div>
+          <p className="text-lg font-bold">Bethany Wilson</p>
+          <p className="text-sm">Basketball Player</p>
+        </div>
+        </div>
+
+      <div className="w-full h-8 bg-[#7197C1]"></div> {/* This creates the short white space */}
+
+  
+      <div className="grid grid-cols-10 w-full px-4">
+          <div className="col-span-10">
+          <FullCalendar
+            height="250px" 
+            plugins={[dayGridPlugin, interactionPlugin, timeGridPlugin]}
+            initialView="timeGridWeek"
+            headerToolbar={{
+              left: 'prev, next, today',
+              center: 'title',
+              right: 'timeGridWeek',
+            }}
+            buttonText={{
+              today: 'Today',
+              week: 'Week',
+            }}
+            events={allEvents as EventSourceInput}
+            nowIndicator={true}
+            editable={true}
+            droppable={true}
+            selectable={true}
+            selectMirror={true}
+            dateClick={handleDateClick}
+            eventClick={(data) => handleEditModal(data)}
+          />
 
           </div>
         </div>
+
+        <div className="w-full h-8 bg-[#7197C1]"></div>
+
+
+        <div className="w-full bg-[#446486] flex-1 h-35 rounded-t-3xl">
+          <div className="space-y-8 space-x-4">
+            <div>
+              <h2 className="text-xl font-semibold text-white mt-4 ml-4">Upcoming Practice</h2>
+              <p className="text-base text-white ml-4">Scheduled practice sessions will appear here.</p>
+            </div>
+
+            <div>
+              <h2 className="text-xl font-semibold text-white">Upcoming Team Meetings</h2>
+              <p className="text-base text-white">Scheduled team meetings will appear here.</p>
+            </div>
+
+            <div>
+              <h2 className="text-xl font-semibold text-white">Daily Goals</h2>
+              <p className="text-base text-white">Goals that you log will appear here.</p>
+            </div>
+
+            <div>
+              <h2 className="text-xl font-semibold text-white">Performance Statistics</h2>
+              <p className="text-base text-white">Recent performance statistics will appear here.</p>
+            </div>
+
+            <div>
+              <h2 className="text-xl font-semibold text-white]">Special Notes</h2>
+              <p className="text-base text-white">Notes that you save will appear here.</p>
+            </div>
+          </div>
+        </div>
+
+
         <Transition show={showDeleteModal} as={Fragment}>
           <Dialog as="div" className="relative z-10" onClose={setShowDeleteModal}>
                 <TransitionChild 

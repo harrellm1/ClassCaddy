@@ -8,6 +8,7 @@ export default function Account({ goToNextPage }: { goToNextPage: (page: string,
     email: "",
     password: "",
   });
+  const [studentType, setStudentType] = useState("");
 
   const [editMode, setEditMode] = useState(false);
 
@@ -103,6 +104,44 @@ export default function Account({ goToNextPage }: { goToNextPage: (page: string,
             }}
           />
         </div>
+
+        {/* Select Student Type */}
+        <div style={{ marginBottom: "10px" }}>
+          <label
+            style={{
+              display: "block",
+              marginBottom: "5px",
+              fontSize: "16px",
+            }}
+          >
+            Student Type
+          </label>
+          <select
+            value={studentType}
+            onChange={(e) => setStudentType(e.target.value)}
+            disabled={!editMode}
+            style={{
+              width: "300px",
+              height: "45px",
+              padding: "10px",
+              borderRadius: "4px",
+              border: editMode ? "1px solid #ccc" : "none",
+              backgroundColor: editMode ? "#fff" : "#ddd",
+              color: editMode ? "black" : "#666",
+              cursor: editMode ? "pointer" : "not-allowed",
+              fontSize: "16px",
+              textAlign: "left",
+              appearance: "none", // Hides default browser styles for dropdowns
+            }}
+          >
+            <option value="" disabled style={{ color: "#aaa" }}>
+              Select
+            </option>
+            <option value="fulltime">Full-Time</option>
+            <option value="working">Working</option>
+            <option value="athlete">Athlete</option>
+          </select>
+        </div>
       </div>
 
       {/* Edit / Save Buttons */}
@@ -140,6 +179,23 @@ export default function Account({ goToNextPage }: { goToNextPage: (page: string,
         </button>
       )}
 
+      {/* Premium Button */}
+      <button
+        onClick={() => goToNextPage("payment")}
+        style={{
+          padding: "10px 20px",
+          backgroundColor: "#DDA600",
+          color: "#fff",
+          border: "none",
+          borderRadius: "4px",
+          cursor: "pointer",
+          fontSize: "16px",
+          marginBottom: "20px",
+        }}
+      >
+        Try Premium
+      </button>
+
       {/* Back Button */}
       <button
         onClick={() => goToNextPage("calendar", "settings")}
@@ -151,7 +207,6 @@ export default function Account({ goToNextPage }: { goToNextPage: (page: string,
           borderRadius: "4px",
           cursor: "pointer",
           fontSize: "16px",
-          marginTop: "10px",
         }}
       >
         Back
