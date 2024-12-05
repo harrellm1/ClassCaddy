@@ -30,6 +30,7 @@ model Student {
     nextPayment DateTime?
     paidPlan    Boolean
     events      CalEvent[]
+    assingments Assignment[]
 }
 
 model Course {
@@ -40,6 +41,7 @@ model Course {
     student             Student @relation(fields: [studentId], references:[email])
     studentId           String
     classtimes          ClassTime[] 
+    assingments         Assignment[]
     Semester            String
     Year                Int
 }
@@ -67,4 +69,31 @@ model CalEvent {
     tag         String
     recurrence  String?
     recurrenceEnd   DateTime?
+    recurrenceId    String?  
+}
+
+
+
+
+model Assignment {
+  id          String      @id @default(cuid())
+  title       String
+  description String?
+  dueDate     DateTime
+  completed   Boolean  @default(false)
+  studentId   String 
+  courseId    String 
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  student     Student     @relation(fields: [studentId], references: [email])
+  course      Course      @relation(fields: [courseId], references: [id])
+  courseNum   String
+}
+
+model Job {
+    id String @id @default(cuid())
+    jobTitle    String
+    shifts      Shift[]
+    studentId   String
+    student     Studen @relation (fields: [studentId], references:[email])
 }

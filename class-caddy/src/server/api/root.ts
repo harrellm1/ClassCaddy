@@ -3,6 +3,7 @@ import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 import { courseRouter } from "./routers/course";
 import { classRouter } from "./routers/classTime";
 import { calEventRouter } from "./routers/calEvent";
+import { assignmentRouter } from "./routers/assignment";
 /**
  * This is the primary router for your server.
  *
@@ -12,7 +13,8 @@ export const appRouter = createTRPCRouter({
   class: classRouter,
   user: userRouter,
   course: courseRouter,
-  calEvent: calEventRouter
+  calEvent: calEventRouter,
+  assignment: assignmentRouter
 });
 
 // export type definition of API

@@ -76,5 +76,58 @@ export const courseRouter = createTRPCRouter({
         })
 
         return course ?? null;
-    })
+    }),
+
+    updateCourse: publicProcedure.input(z.object({
+      id: z.string(),
+      courseName: z.string(),
+      courseNumber: z.string(),
+      courseInstructor: z.string()
+    })).mutation(async({ctx,input}) => {
+      const updatedCourse =  await ctx.db.course.update({
+        where: {
+          id: input.id
+        },
+        data: {
+          courseName: input.courseName,
+          courseNumber: input.courseNumber,
+          courseInstructor: input.courseInstructor
+        }
+      })
+
+      return updatedCourse ?? null;
+    }),
+
+    getCourseFromId: publicProcedure.input(z.object({
+      id: z.string(),
+      email: z.string()
+    })).mutation(async({ctx,input}) => {
+      const course = ctx.db.course.findFirst({
+        where: {
+          studentId:input.email,
+          id:input.id
+        }
+      })
+
+      return course ?? null;
+    }),
+
+    deleteCourse: publicProcedure.input(z.string()).mutation(async({ctx,input})=> {
+      const deletedAssignments =  await ctx.db.assignment.deleteMany({
+        where: {
+          courseId:input
+        }
+      });
+
+      const deletedcourse = await ctx.db.course.delete({
+        where:{
+          id: input
+        }
+      })
+
+      return deletedcourse ?? null;
+  
+  
+  
+  })
 });
