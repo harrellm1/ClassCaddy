@@ -2,25 +2,31 @@
 import { Student } from "@prisma/client";
 import { useState } from "react";
 import { api } from "~/trpc/react";
-export default function Payment({ user, goToNextPage }: { user:Student | null, goToNextPage: (page: string) => void }) {
+export default function Payment({ user, goToNextPage }: { user: Student | null, goToNextPage: (page: string) => void }) {
+
+  //database call
   const subscribe = api.user.subscribe.useMutation();
+
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const [cardDetails, setCardDetails] = useState({ cardNumber: "", expiry: "", cvv: "" });
   const [loginInfo, setLoginInfo] = useState({ email: "", password: "" });
+
+  //only go to page if user is set
   if (!user) {
     goToNextPage('home');
   }
-  async function handleCompletePayment () {
-    if (selectedPlan && cardDetails.cardNumber && loginInfo.email) {
-      if(user) {
-        if((user.email === loginInfo.email) && (user.password === loginInfo.password)){
-          await subscribe.mutateAsync(user.email);
-          alert(`Payment for the ${selectedPlan} plan has been processed.`);
-          goToNextPage("dashboard");
-        }
-        
+
+  async function handleCompletePayment() {
+    if (selectedPlan && (cardDetails.cardNumber.length == 16) && (cardDetails.cvv.length == 3) && loginInfo.email) {
+      if (user) {
+
+        await subscribe.mutateAsync({ email: loginInfo.email, password: loginInfo.password });
+        alert(`Payment for the ${selectedPlan} plan has been processed.`);
+        goToNextPage("login");
+
+
       }
-      
+
     } else {
       alert("Error processing payment.");
     }
@@ -52,32 +58,6 @@ export default function Payment({ user, goToNextPage }: { user:Student | null, g
         <h3 style={{ fontSize: "20px", marginBottom: "10px", color: "#FFFFFF" }}>Select Your Premium Plan</h3>
         <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
           <button
-            onClick={() => setSelectedPlan("Monthly")}
-            style={{
-              padding: "10px 15px",
-              backgroundColor: selectedPlan === "Monthly" ? "#FECB00" : "#ddd",
-              color: selectedPlan === "Monthly" ? "#fff" : "#333",
-              border: "none",
-              borderRadius: "4px",
-              cursor: "pointer",
-            }}
-          >
-            Monthly - $3.99
-          </button>
-          <button
-            onClick={() => setSelectedPlan("Yearly")}
-            style={{
-              padding: "10px 15px",
-              backgroundColor: selectedPlan === "Yearly" ? "#FECB00" : "#ddd",
-              color: selectedPlan === "Yearly" ? "#fff" : "#333",
-              border: "none",
-              borderRadius: "4px",
-              cursor: "pointer",
-            }}
-          >
-            Yearly - $12.99
-          </button>
-          <button
             onClick={() => setSelectedPlan("Lifetime")}
             style={{
               padding: "10px 15px",
@@ -88,7 +68,7 @@ export default function Payment({ user, goToNextPage }: { user:Student | null, g
               cursor: "pointer",
             }}
           >
-            Lifetime - $49.99
+            Lifetime - $19.99
           </button>
         </div>
       </div>
@@ -156,13 +136,13 @@ export default function Payment({ user, goToNextPage }: { user:Student | null, g
 
       {/* Cancel Button */}
       <button
-        onClick={() => goToNextPage("dashboard")}
+        onClick={() => goToNextPage("main dashboard")}
         style={{
           marginTop: "20px",
           padding: "10px 20px",
           backgroundColor: "#fff",
           color: "#446486",
-          
+
           borderRadius: "4px",
           cursor: "pointer",
           fontSize: "16px",

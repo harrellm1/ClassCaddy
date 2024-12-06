@@ -9,10 +9,10 @@ import { DialogPanel, DialogTitle, Transition, TransitionChild } from '@headless
 import { Dialog } from '@headlessui/react'
 import { ExclamationTriangleIcon } from "@heroicons/react/16/solid";
 import { EventSourceInput } from "@fullcalendar/core/index.js";
-import { CalEvent, Student, Shift, Job } from "@prisma/client";
+import { CalEvent, Student, Sport, Practice } from "@prisma/client";
 import { api } from "~/trpc/react";
 
-export default function WorkDashboard({ user, goToNextPage }: { user: Student | null, goToNextPage: (page: string) => void }) {
+export default function AthleteDashboard({ user, goToNextPage }: { user: Student | null, goToNextPage: (page: string) => void }) {
 
   //database calls
 
@@ -21,24 +21,27 @@ export default function WorkDashboard({ user, goToNextPage }: { user: Student | 
   const deleteEvent = api.calEvent.deleteEvent.useMutation();
   const getOneEvent = api.calEvent.getSingleEvent.useMutation();
   const editEvent = api.calEvent.editEvent.useMutation();
-  const getWorkEvents = api.calEvent.getWorkEvents.useMutation();
+  const getAthleticEvents = api.calEvent.getAthleticEvents.useMutation();
 
-  //job database calls
-  const getJob = api.job.checkUserJob.useMutation();
-  const createJob = api.job.addJob.useMutation();
-  const createShift = api.shift.addShift.useMutation();
+  //sport database calls
+  const getPractices = api.practice.getUserPractices.useMutation();
+  const getSport = api.sport.checkUserSport.useMutation();
+  const createSport = api.sport.addSport.useMutation();
 
-  //shift database calls
-  const getShifts = api.shift.getUserShifts.useMutation();
-  const editShift = api.shift.updateShift.useMutation();
-  const deleteShift = api.shift.deleteShift.useMutation();
+  //practice database calls
+  const createPractice = api.practice.addPractice.useMutation();
+  const editPractice = api.practice.updatePractice.useMutation();
+  const deletePractice = api.practice.deletePractice.useMutation();
 
   //form states
-  const [showShiftEditForm, setShowShiftEditForm] = useState(false);
-  const [showAddShiftForm, setShowAddShiftForm] = useState(false);
-  const [showModal, setShowModal] = useState(false)
-  const [showDeleteModal, setShowDeleteModal] = useState(false)
 
+  //event
+  const [showModal, setShowModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  //practice
+  const [showPracticeEditForm, setShowPracticeEditForm] = useState(false);
+  const [showAddPracticeForm, setShowAddPracticeForm] = useState(false);
 
   //event states
   const [title, setTitle] = useState("");
@@ -54,23 +57,23 @@ export default function WorkDashboard({ user, goToNextPage }: { user: Student | 
 
   //effect states
   const [refreshEvents, setrefreshEvents] = useState(0);
-  const [refreshShifts, setRefreshShifts] = useState(0);
+  const [refreshPractices, setRefreshPractices] = useState(0);
 
-  //course states
-  const [allUserShifts, setAllUserShifts] = useState<Shift[]>([]);
-  const [shiftIdToEdit, setShiftIdToEdit] = useState<string | null>(null);
+  //sport states
+  const [sportTitle, setSportTitle] = useState("");
+  const [teamTitle, setTeamTitle] = useState("");
+  const [coachName, setCoachName] = useState("");
+  const [coachPhone, setCoachPhone] = useState("");
+  const [coachEmail, setCoachEmail] = useState("");
+  const [hasSport, setHasSport] = useState<Sport>();
+  const [checkingSport, setCheckingSport] = useState(true);
 
-  //assignment states
-  const [jobTitle, setJobTitle] = useState("");
-  const [supervisorName, setSupervisorName] = useState("");
-  const [workPhone, setWorkPhone] = useState("");
-  const [workEmail, setWorkEmail] = useState("");
-  const [shiftStart, setShiftStart] = useState("");
-  const [shiftEnd, setShiftEnd] = useState("");
-  const [shiftNotes, setShiftNotes] = useState("");
-  const [hasJob, setHasJob] = useState<Job>();
-  const [checkingJob, setCheckingJob] = useState(true);
-
+  //practice states
+  const [practiceStart, setPracticeStart] = useState("");
+  const [practiceNotes, setPracticeNotes] = useState("");
+  const [practiceEnd, setPracticeEnd] = useState("");
+  const [allUserPractices, setAllUserPractices] = useState<Practice[]>([]);
+  const [practiceIdToEdit, setPracticeIdToEdit] = useState<string | null>(null);
 
 
   function formatDateForInput(date: string | Date): string {
@@ -84,32 +87,33 @@ export default function WorkDashboard({ user, goToNextPage }: { user: Student | 
   }
 
   useEffect(() => {
-    const checkForJob = async () => {
+    const checkForSport = async () => {
       if (user) {
-        const userJob = await getJob.mutateAsync(user.email);
-        if (userJob) {
-          setHasJob(userJob)
-          setJobTitle(userJob.jobTitle)
-          setSupervisorName(userJob.supervisor)
-          setWorkPhone(userJob.jobPhone)
-          setWorkEmail(userJob.jobEmail)
+        const userSport = await getSport.mutateAsync(user.email);
+        if (userSport) {
+          setHasSport(userSport);
+          setSportTitle(userSport.sportName);
+          setTeamTitle(userSport.teamName);
+          setCoachName(userSport.Coach);
+          setCoachPhone(userSport.coachPhone);
+          setCoachEmail(userSport.coachEmail)
         }
       }
-      setCheckingJob(false);
+      setCheckingSport(false);
     }
-    const getUserWorkEvents = async () => {
+    const getUserAthleticEvents = async () => {
       if (user) {
-        const allUserWorkEvents = await getWorkEvents.mutateAsync(user.email);
-        setAllEvents(allUserWorkEvents);
+        const allUserAthleticsEvents = await getAthleticEvents.mutateAsync(user.email);
+        setAllEvents(allUserAthleticsEvents);
       }
 
 
     };
 
-    const getUserShifts = async () => {
+    const getUserPractices = async () => {
       if (user) {
-        const allShifts = await getShifts.mutateAsync(user.email);
-        setAllUserShifts(allShifts);
+        const allPractices = await getPractices.mutateAsync(user.email);
+        setAllUserPractices(allPractices);
       }
     }
 
@@ -118,12 +122,12 @@ export default function WorkDashboard({ user, goToNextPage }: { user: Student | 
     if (user) {
 
 
-      getUserWorkEvents();
-      getUserShifts();
-      checkForJob();
+      getUserAthleticEvents();
+      getUserPractices();
+      checkForSport();
 
     }
-  }, [user, refreshEvents, refreshShifts]);
+  }, [user, refreshEvents, refreshPractices]);
 
   function handleDateClick(arg: { date: Date, allDay: boolean }) {
     const dateString = arg.date.toISOString().slice(0, 16); // Format to `YYYY-MM-DDTHH:mm`
@@ -135,27 +139,31 @@ export default function WorkDashboard({ user, goToNextPage }: { user: Student | 
 
 
 
-  async function handleShiftClick(shift: Shift) {
+  async function handlePracticeClick(practice: Practice) {
     if (user) {
-      setShiftIdToEdit(shift.id)
-      setShiftStart(formatDateForInput(shift.start));
-      setShiftEnd(formatDateForInput(shift.end));
-      setShowShiftEditForm(true);
+      setPracticeIdToEdit(practice.id);
+      setPracticeStart(formatDateForInput(practice.start));
+      setPracticeEnd(formatDateForInput(practice.end));
+      if (practice.notes) {
+        setPracticeNotes(practice.notes)
+      }
+
+      setShowPracticeEditForm(true);
     }
 
   }
 
-  async function handleShiftDelete() {
-    if (shiftIdToEdit) {
-
-      await deleteShift.mutateAsync({ id: shiftIdToEdit })
-      setRefreshShifts((prev) => prev + 1);
+  async function handlePracticeDelete() {
+    if (practiceIdToEdit) {
+      const deletedEvent = await deletePractice.mutateAsync({ id: practiceIdToEdit })
+      setRefreshPractices((prev) => prev + 1);
       setrefreshEvents((prev) => prev + 1);
     }
 
-    setShiftIdToEdit("")
-    setShiftStart("");
-    setShiftEnd("");
+    setPracticeIdToEdit("");
+    setPracticeNotes("");
+    setPracticeStart("");
+    setPracticeEnd("");
 
   }
 
@@ -168,7 +176,7 @@ export default function WorkDashboard({ user, goToNextPage }: { user: Student | 
       setTitle(event.title);
       setStart(formatDateForInput(event.start));
       setEnd(formatDateForInput(event.end));
-      setEventTag(event.tag || "Work");
+      setEventTag(event.tag || "Athletics");
     }
 
   }
@@ -181,7 +189,7 @@ export default function WorkDashboard({ user, goToNextPage }: { user: Student | 
         start: new Date(start),
         end: new Date(end),
         allDay: allDay,
-        tag: eventTag
+        tag: eventTag,
       })
     }
 
@@ -237,8 +245,8 @@ export default function WorkDashboard({ user, goToNextPage }: { user: Student | 
 
       })
 
-      const allUserWorkEvents = await getWorkEvents.mutateAsync(user.email);
-      setAllEvents(allUserWorkEvents);
+      const allUserAthleticEvents = await getAthleticEvents.mutateAsync(user.email);
+      setAllEvents(allUserAthleticEvents);
     }
     setTitle("");
     setStart("");
@@ -254,7 +262,7 @@ export default function WorkDashboard({ user, goToNextPage }: { user: Student | 
 
       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#7197C1] to-[#446486] text-white">
         <br></br>
-        <h2>{user?.firstName}'s Work Dashboard</h2>
+        <h2>{user?.firstName}'s Athletic's Dashboard</h2>
         <br></br>
         <nav className="flex justify-end items-center mb-12 w-full max-w-screen-xl mx-auto px-4">
           <div className="flex space-x-4">
@@ -297,25 +305,26 @@ export default function WorkDashboard({ user, goToNextPage }: { user: Student | 
         <div className="w-full bg-[#446486] flex-1 h-35 rounded-t-3xl">
           <div className="flex space-x-4">
             <div className='w-1/2'>
-              <h2 className="text-xl font-semibold text-white mt-4 ml-4">Job Information</h2>
-              <p className="text-base text-white ml-4"> Title: {jobTitle} </p>
-              <p className="text-base text-white ml-4"> Supervisor: {supervisorName} </p>
-              <p className="text-base text-white ml-4"> Work Phone: {workPhone} </p>
-              <p className="text-base text-white ml-4"> Work Email: {workEmail} </p>
+              <h2 className="text-xl font-semibold text-white mt-4 ml-4">Sport Information</h2>
+              <p className="text-base text-white ml-4"> Sport: {sportTitle} </p>
+              <p className="text-base text-white ml-4"> Team: {teamTitle} </p>
+              <p className="text-base text-white ml-4"> Coach: {coachName} </p>
+              <p className="text-base text-white ml-4"> Coach Phone: {coachPhone} </p>
+              <p className="text-base text-white ml-4"> Coach Email: {coachEmail} </p>
             </div>
             <div className='w-1/2'>
 
-              <h2 className="text-xl font-semibold text-white mt-4 ml-4">Upcoming Shifts</h2>
-              <button className="text-white bg-[#2a3a50] hover:bg-[#DDA600] px-4 py-2 rounded-md ml-4" style={{ marginBottom: '10px' }} onClick={() => { setShowAddShiftForm(true) }} >Add Shift</button>
-              <p className="text-base text-white ml-4">Shift Start | Shift End</p>
+              <h2 className="text-xl font-semibold text-white mt-4 ml-4">Upcoming Practices</h2>
+              <button className="text-white bg-[#2a3a50] hover:bg-[#DDA600] px-4 py-2 rounded-md ml-4" style={{ marginBottom: '10px' }} onClick={() => { setShowAddPracticeForm(true) }} >Add Practice</button>
+              <p className="text-base text-white ml-4">Practice Start | Practice End</p>
               {
 
-                allUserShifts.map((shift) => {
-                  if (shift.start > new Date()) {
+                allUserPractices.map((practice) => {
+                  if (practice.start > new Date()) {
                     return (
-                      <div key={shift.id}
-                        onClick={() => { handleShiftClick(shift) }}
-                        className="text-base text-white cursor-pointer hover:underline ml-4"> start: {shift.start.toLocaleString().slice(0, 16)} | end: {shift.end.toLocaleString()} </div>
+                      <div key={practice.id}
+                        onClick={() => { handlePracticeClick(practice) }}
+                        className="text-base text-white cursor-pointer hover:underline ml-4"> start: {practice.start.toLocaleString().slice(0, 16)} | end: {practice.end.toLocaleString()} </div>
                     )
                   }
 
@@ -569,7 +578,7 @@ export default function WorkDashboard({ user, goToNextPage }: { user: Student | 
         </Transition>
 
 
-        {!hasJob && !checkingJob && (
+        {!hasSport && !checkingSport && (
           <div
             style={{
               position: 'fixed',  // Make it overlay the screen
@@ -597,16 +606,18 @@ export default function WorkDashboard({ user, goToNextPage }: { user: Student | 
               onSubmit={async (e: React.FormEvent) => {
                 e.preventDefault();
                 if (user) {
-                  const newJob = await createJob.mutateAsync({
+                  const newSport = await createSport.mutateAsync({
                     studentId: user.email,
-                    title: jobTitle,
-                    supervisor: supervisorName,
-                    jobPhone: workPhone,
-                    jobEmail: workEmail
+                    teamName: teamTitle,
+                    sportName: sportTitle,
+                    coach: coachName,
+                    coachPhone: coachPhone,
+                    coachEmail: coachEmail
+
                   });
 
-                  if (newJob) {
-                    setHasJob(newJob);
+                  if (newSport) {
+                    setHasSport(newSport);
                   }
                 }
 
@@ -622,7 +633,7 @@ export default function WorkDashboard({ user, goToNextPage }: { user: Student | 
                   marginBottom: '20px',          // Adds space below the heading
                 }}
               >
-                Enter Job
+                Enter Sport
               </h3>
 
               <button
@@ -637,19 +648,18 @@ export default function WorkDashboard({ user, goToNextPage }: { user: Student | 
                   cursor: 'pointer',
                 }}
                 onClick={() => {
-                  alert("Must add job to use work dashboard. Redirecting to main dashboard");
+                  alert("Must add sport to use athletic dashboard. Redirecting to main dashboard");
                   goToNextPage('main dashboard');
                 }}
 
               >
                 X
               </button>
-
               <input
                 type="text"
-                placeholder="Job Title"
-                value={jobTitle}
-                onChange={(e) => setJobTitle(e.target.value)}
+                placeholder="Sport Title"
+                value={sportTitle}
+                onChange={(e) => setSportTitle(e.target.value)}
                 style={{
                   display: 'block',
                   width: '100%',
@@ -665,9 +675,28 @@ export default function WorkDashboard({ user, goToNextPage }: { user: Student | 
 
               <input
                 type="text"
-                placeholder="Supervisor"
-                value={supervisorName}
-                onChange={(e) => setSupervisorName(e.target.value)}
+                placeholder="Team Title"
+                value={teamTitle}
+                onChange={(e) => setTeamTitle(e.target.value)}
+                style={{
+                  display: 'block',
+                  width: '100%',
+                  height: '36.526px',
+                  borderRadius: '5px',
+                  border: '1px solid #ccc',
+                  padding: '5px',
+                  marginBottom: '10px',
+                  color: 'black',
+                  backgroundColor: 'white',
+                }}
+              />
+
+
+              <input
+                type="text"
+                placeholder="Coach"
+                value={coachName}
+                onChange={(e) => setCoachName(e.target.value)}
                 style={{
                   display: 'block',
                   width: '100%',
@@ -684,8 +713,8 @@ export default function WorkDashboard({ user, goToNextPage }: { user: Student | 
               <input
                 type="text"
                 placeholder="phone"
-                value={workPhone}
-                onChange={(e) => setWorkPhone(e.target.value)}
+                value={coachPhone}
+                onChange={(e) => setCoachPhone(e.target.value)}
                 style={{
                   display: 'block',
                   width: '100%',
@@ -702,8 +731,8 @@ export default function WorkDashboard({ user, goToNextPage }: { user: Student | 
               <input
                 type="text"
                 placeholder="email"
-                value={workEmail}
-                onChange={(e) => setWorkEmail(e.target.value)}
+                value={coachEmail}
+                onChange={(e) => setCoachEmail(e.target.value)}
                 style={{
                   display: 'block',
                   width: '100%',
@@ -743,7 +772,7 @@ export default function WorkDashboard({ user, goToNextPage }: { user: Student | 
         )
         }
 
-        {showAddShiftForm && (
+        {showAddPracticeForm && (
           <div
             style={{
               position: 'fixed',  // Make it overlay the screen
@@ -772,22 +801,30 @@ export default function WorkDashboard({ user, goToNextPage }: { user: Student | 
               onSubmit={async (e: React.FormEvent) => {
                 e.preventDefault();
                 if (user) {
-                  if (hasJob) {
-                    const newShift = await createShift.mutateAsync({
+                  if (hasSport) {
+
+                    const newPractice = await createPractice.mutateAsync({
                       studentId: user.email,
-                      start: new Date(shiftStart),
-                      end: new Date(shiftEnd),
-                      jobId: hasJob.id
+                      start: new Date(practiceStart),
+                      end: new Date(practiceEnd),
+                      sportId: hasSport.id,
+                      notes: practiceNotes
                     })
 
-                    setAllUserShifts([...allUserShifts, newShift])
-                    setRefreshShifts((prev) => prev + 1);
-                    setShowAddShiftForm(false);
+                    setPracticeStart("");
+                    setPracticeEnd("");
+                    setPracticeNotes("");
+
+                    setAllUserPractices([...allUserPractices, newPractice])
+                    setRefreshPractices((prev) => prev + 1);
+                    setShowAddPracticeForm(false);
+
                   }
 
+                  setPracticeStart("");
+                  setPracticeEnd("");
+                  setPracticeNotes("");
                 }
-
-
 
               }}
             >
@@ -804,9 +841,10 @@ export default function WorkDashboard({ user, goToNextPage }: { user: Student | 
                   cursor: 'pointer',
                 }}
                 onClick={() => {
-                  setShiftStart('');
-                  setShiftEnd('');
-                  setShowAddShiftForm(false)
+                  setPracticeStart('');
+                  setPracticeEnd('');
+                  setPracticeNotes('');
+                  setShowAddPracticeForm(false)
                 }}>
                 X
               </button>
@@ -819,13 +857,13 @@ export default function WorkDashboard({ user, goToNextPage }: { user: Student | 
                   marginBottom: '20px',          // Adds space below the heading
                 }}
               >
-                Enter Shift Information
+                Enter Practice: Information
               </h3>
               <input
                 type="datetime-local"
-                placeholder="Due Date"
-                value={shiftStart}
-                onChange={(e) => { setShiftStart(e.target.value) }}
+                placeholder="Practice Start"
+                value={practiceStart}
+                onChange={(e) => { setPracticeStart(e.target.value) }}
                 style={{
                   display: 'block',
                   width: '100%',
@@ -841,9 +879,9 @@ export default function WorkDashboard({ user, goToNextPage }: { user: Student | 
 
               <input
                 type="datetime-local"
-                placeholder="Due Date"
-                value={shiftEnd}
-                onChange={(e) => { setShiftEnd(e.target.value) }}
+                placeholder="End Date"
+                value={practiceEnd}
+                onChange={(e) => { setPracticeEnd(e.target.value) }}
                 style={{
                   display: 'block',
                   width: '100%',
@@ -856,10 +894,11 @@ export default function WorkDashboard({ user, goToNextPage }: { user: Student | 
                   backgroundColor: 'white',
                 }}
               />
+
               <textarea
                 id="description"
-                value={shiftNotes}
-                onChange={(e) => { setShiftNotes(e.target.value) }}
+                value={practiceNotes}
+                onChange={(e) => { setPracticeNotes(e.target.value) }}
                 style={{
                   width: '100%',
                   height: '150px', // Adjust height as needed
@@ -870,6 +909,9 @@ export default function WorkDashboard({ user, goToNextPage }: { user: Student | 
 
                 placeholder="Enter a paragraph description here..."
               />
+
+
+
 
               <button
                 type='submit'
@@ -895,7 +937,7 @@ export default function WorkDashboard({ user, goToNextPage }: { user: Student | 
         )}
 
 
-        {showShiftEditForm && (
+        {showPracticeEditForm && (
           <div
             style={{
               position: 'fixed',  // Make it overlay the screen
@@ -924,19 +966,20 @@ export default function WorkDashboard({ user, goToNextPage }: { user: Student | 
               onSubmit={async (e: React.FormEvent) => {
                 e.preventDefault();
                 if (user) {
-                  if (shiftIdToEdit) {
-                    const updatedShift = await editShift.mutateAsync({
-                      id: shiftIdToEdit,
-                      start: new Date(shiftStart),
-                      end: new Date(shiftEnd)
+                  if (practiceIdToEdit) {
+                    const updatedPractice = await editPractice.mutateAsync({
+                      id: practiceIdToEdit,
+                      start: new Date(practiceStart),
+                      end: new Date(practiceStart),
+                      notes: practiceNotes
                     })
 
-                    if (updatedShift) {
-                      setAllUserShifts((prevShifts) =>
-                        prevShifts.map((shift) =>
-                          shift.id === updatedShift.id
-                            ? { ...shift, ...updatedShift } // Update the course if it matches
-                            : shift // Keep the other courses as they are
+                    if (updatedPractice) {
+                      setAllUserPractices((prevPractices) =>
+                        prevPractices.map((practice) =>
+                          practice.id === updatedPractice.id
+                            ? { ...practice, ...updatedPractice } // Update the course if it matches
+                            : practice // Keep the other courses as they are
                         )
                       );
                     }
@@ -944,11 +987,11 @@ export default function WorkDashboard({ user, goToNextPage }: { user: Student | 
 
 
 
-                  setRefreshShifts((prev) => prev + 1);
-                  setShiftEnd("");
-                  setShiftStart("");
-                  setShiftIdToEdit("");
-                  setShowShiftEditForm(false);
+                  setRefreshPractices((prev) => prev + 1);
+                  setPracticeEnd("");
+                  setPracticeStart("");
+                  setPracticeIdToEdit("");
+                  setShowPracticeEditForm(false);
                 }
 
               }
@@ -970,9 +1013,9 @@ export default function WorkDashboard({ user, goToNextPage }: { user: Student | 
                   cursor: 'pointer',
                 }}
                 onClick={() => {
-                  setShiftStart('');
-                  setShiftEnd('');
-                  setShowShiftEditForm(false)
+                  setPracticeStart('');
+                  setPracticeEnd('');
+                  setShowPracticeEditForm(false)
                 }}>
                 X
               </button>
@@ -985,13 +1028,13 @@ export default function WorkDashboard({ user, goToNextPage }: { user: Student | 
                   marginBottom: '20px',          // Adds space below the heading
                 }}
               >
-                Edit Shift Information
+                Edit Practice Information
               </h3>
               <input
                 type="datetime-local"
                 placeholder="Start Time"
-                value={shiftStart}
-                onChange={(e) => { setShiftStart(e.target.value) }}
+                value={practiceStart}
+                onChange={(e) => { setPracticeStart(e.target.value) }}
                 style={{
                   display: 'block',
                   width: '100%',
@@ -1008,8 +1051,8 @@ export default function WorkDashboard({ user, goToNextPage }: { user: Student | 
               <input
                 type="datetime-local"
                 placeholder="End Time"
-                value={shiftEnd}
-                onChange={(e) => { setShiftEnd(e.target.value) }}
+                value={practiceEnd}
+                onChange={(e) => { setPracticeEnd(e.target.value) }}
                 style={{
                   display: 'block',
                   width: '100%',
@@ -1027,8 +1070,8 @@ export default function WorkDashboard({ user, goToNextPage }: { user: Student | 
 
               <textarea
                 id="description"
-                value={shiftNotes}
-                onChange={(e) => { setShiftNotes(e.target.value) }}
+                value={practiceNotes}
+                onChange={(e) => { setPracticeNotes(e.target.value) }}
                 style={{
                   width: '100%',
                   height: '150px', // Adjust height as needed
@@ -1042,13 +1085,12 @@ export default function WorkDashboard({ user, goToNextPage }: { user: Student | 
 
 
 
-
               <button type="button" className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text:sm 
-                                font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto" onClick={() => {
-                  handleShiftDelete();
-                  setShowShiftEditForm(false);
+                        font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto" onClick={() => {
+                  handlePracticeDelete();
+                  setShowPracticeEditForm(false);
                 }}>
-                Delete Shift
+                Delete Practice
               </button>
 
 

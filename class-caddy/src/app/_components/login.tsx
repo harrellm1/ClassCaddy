@@ -1,23 +1,24 @@
 'use client';
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Logo from "../_components/logo";
 import { Student } from "@prisma/client";
 import { api } from "~/trpc/react";
 export default function Login({ login, goToNextPage }: { login: (user: Student) => void; goToNextPage: (page: string) => void }) {
+
+  //input states
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const studentSignIn = api.user.signIn.useMutation();
-  
 
-  const handleLogin = async(e:React.FormEvent) => {
-    const student = await studentSignIn.mutateAsync({useremail: email, password: password});
 
-    if(student) {
+  const handleLogin = async (e: React.FormEvent) => {
+    const student = await studentSignIn.mutateAsync({ useremail: email, password: password });
+
+    if (student) {
       login(student);
       console.log("logged in student: ", student);
-      goToNextPage("calendar"); // Navigate to the Calendar page
+      goToNextPage("main dashboard"); // Navigate to the Calendar page
 
     }
 
@@ -26,8 +27,8 @@ export default function Login({ login, goToNextPage }: { login: (user: Student) 
       setEmail("");
       setPassword("");
     }
-   
-    
+
+
   };
 
   return (
@@ -78,7 +79,7 @@ export default function Login({ login, goToNextPage }: { login: (user: Student) 
         <form
           onSubmit={(e: React.FormEvent) => {
             e.preventDefault();
-            handleLogin(e); // Directly log in without checking credentials
+            handleLogin(e);
           }}
         >
           <input

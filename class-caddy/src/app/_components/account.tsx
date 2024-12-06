@@ -3,60 +3,53 @@ import { Student } from "@prisma/client";
 import { useEffect } from "react";
 import { useState } from "react";
 import { api } from "~/trpc/react";
-export default function Account({ user, goToNextPage }: { user:Student | null, goToNextPage: (page: string, view?: string) => void }) {
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [studentType, setStudentType] = useState("");
+export default function Account({ user, goToNextPage }: { user: Student | null, goToNextPage: (page: string, view?: string) => void }) {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
 
-    const editUser = api.user.editUser.useMutation();
-    const getUser = api.user.getUser.useMutation();
+  const editUser = api.user.editUser.useMutation();
+  const getUser = api.user.getUser.useMutation();
 
   const [editMode, setEditMode] = useState(false);
 
   useEffect(() => {
     const retrieveUser = async () => {
-      if(user){
-        const foundUser = await getUser.mutateAsync({useremail: user.email,
+      if (user) {
+        const foundUser = await getUser.mutateAsync({
+          useremail: user.email,
           password: user.password
         })
 
-        if(foundUser) {
+        if (foundUser) {
           setFirstName(foundUser.firstName);
           setLastName(foundUser.lastName);
           setEmail(foundUser.email);
-          setPassword(foundUser.password);
         }
-        
       }
-      
-
     };
-    if(user) retrieveUser();
-}, [user]);
+    if (user) retrieveUser();
+  }, [user]);
 
 
-  async function handleSaveChanges(){
+  async function handleSaveChanges() {
 
-    if(user) {
-        const changedUser = await editUser.mutateAsync({
-            email: user.email,
-            firstname: firstName,
-            lastname: lastName,
-            password: password  
-        });
+    if (user) {
+      const changedUser = await editUser.mutateAsync({
+        email: user.email,
+        firstname: firstName,
+        lastname: lastName,
+      });
 
-        goToNextPage('calendar');
-    
-        if(!changedUser) {
-            alert("fill out all fields")
-            setFirstName("");
-            setLastName("");
-            setPassword("");
-        }
+      goToNextPage('main dashboard');
+
+      if (!changedUser) {
+        alert("fill out all fields")
+        setFirstName("");
+        setLastName("");
+      }
     }
-   
+
   }
 
   return (
@@ -121,7 +114,7 @@ export default function Account({ user, goToNextPage }: { user:Student | null, g
             }}
           />
         </div>
-        
+
 
         <div style={{ marginBottom: "10px" }}>
           <label style={{ display: "block", marginBottom: "5px", fontSize: "16px" }}>
@@ -144,64 +137,9 @@ export default function Account({ user, goToNextPage }: { user:Student | null, g
           />
         </div>
 
-        <div style={{ marginBottom: "10px" }}>
-          <label style={{ display: "block", marginBottom: "5px", fontSize: "16px" }}>
-            Password
-          </label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            disabled={!editMode}
-            placeholder="Enter your password"
-            style={{
-              padding: "10px",
-              width: "300px",
-              borderRadius: "4px",
-              border: editMode ? "1px solid #ccc" : "none",
-              backgroundColor: editMode ? "#fff" : "#ddd",
-              color: "black",
-            }}
-          />
-        </div>
 
-        {/* Select Student Type */}
-        <div style={{ marginBottom: "10px" }}>
-          <label
-            style={{
-              display: "block",
-              marginBottom: "5px",
-              fontSize: "16px",
-            }}
-          >
-            Student Type
-          </label>
-          <select
-            value={studentType}
-            onChange={(e) => setStudentType(e.target.value)}
-            disabled={!editMode}
-            style={{
-              width: "300px",
-              height: "45px",
-              padding: "10px",
-              borderRadius: "4px",
-              border: editMode ? "1px solid #ccc" : "none",
-              backgroundColor: editMode ? "#fff" : "#ddd",
-              color: editMode ? "black" : "#666",
-              cursor: editMode ? "pointer" : "not-allowed",
-              fontSize: "16px",
-              textAlign: "left",
-              appearance: "none", // Hides default browser styles for dropdowns
-            }}
-          >
-            <option value="" disabled style={{ color: "#aaa" }}>
-              Select
-            </option>
-            <option value="fulltime">Full-Time</option>
-            <option value="working">Working</option>
-            <option value="athlete">Athlete</option>
-          </select>
-        </div>
+
+
       </div>
 
       {/* Edit / Save Buttons */}
@@ -258,7 +196,7 @@ export default function Account({ user, goToNextPage }: { user:Student | null, g
 
       {/* Back Button */}
       <button
-        onClick={() => goToNextPage("calendar", "settings")}
+        onClick={() => goToNextPage("main dashboard", "settings")}
         style={{
           padding: "10px 20px",
           backgroundColor: "#fff",

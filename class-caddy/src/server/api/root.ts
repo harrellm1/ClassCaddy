@@ -1,20 +1,26 @@
 import { userRouter } from "~/server/api/routers/user";
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 import { courseRouter } from "./routers/course";
-import { classRouter } from "./routers/classTime";
 import { calEventRouter } from "./routers/calEvent";
 import { assignmentRouter } from "./routers/assignment";
+import { jobRouter } from './routers/job';
+import { shiftRouter } from "./routers/shift";
+import { practiceRouter } from "./routers/practice";
+import { sportsRouter } from "./routers/sport";
 /**
  * This is the primary router for your server.
  *
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
-  class: classRouter,
   user: userRouter,
   course: courseRouter,
   calEvent: calEventRouter,
-  assignment: assignmentRouter
+  assignment: assignmentRouter,
+  job: jobRouter,
+  shift: shiftRouter,
+  practice: practiceRouter,
+  sport: sportsRouter
 });
 
 // export type definition of API

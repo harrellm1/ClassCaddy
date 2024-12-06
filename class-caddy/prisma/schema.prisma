@@ -10,14 +10,7 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Post {
-    id        Int      @id @default(autoincrement())
-    name      String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
 
-    @@index([name])
-}
 
 model Student {
     id          String @id @default(cuid())
@@ -26,9 +19,11 @@ model Student {
     email       String  @unique
     password    String  
     courses     Course[]
-    classtimes  ClassTime[]
-    nextPayment DateTime?
     paidPlan    Boolean
+    shifts      Shift[]
+    job         Job?
+    sport       Sport?
+    practices   Practice[]
     events      CalEvent[]
     assingments Assignment[]
 }
@@ -40,60 +35,92 @@ model Course {
     courseInstructor    String
     student             Student @relation(fields: [studentId], references:[email])
     studentId           String
-    classtimes          ClassTime[] 
     assingments         Assignment[]
     Semester            String
     Year                Int
 }
 
-
-model ClassTime {
-    id          String @id @default(cuid())
-    courseId    String
-    studentId   String
-    course      Course @relation(fields: [courseId], references: [id])
-    student     Student @relation(fields:[studentId], references: [email])
-    day         Int //0 = sunday, 6 = saturday
-    Period      Int  //enter 6 for period 6
-
-}
-
 model CalEvent {
-    id      String  @id @default(cuid())
-    title   String
-    studentId   String
-    student     Student @relation(fields: [studentId], references: [email])
-    start       DateTime
-    end         DateTime
-    allDay      Boolean
-    tag         String
-    recurrence  String?
+    id              String  @id @default(cuid())
+    title           String
+    studentId       String
+    student         Student @relation(fields: [studentId], references: [email])
+    start           DateTime
+    end             DateTime
+    allDay          Boolean
+    tag             String
+    recurrence      String?
     recurrenceEnd   DateTime?
     recurrenceId    String?  
+    shift           Shift? 
+    assignment      Assignment?
+    practice        Practice?
 }
-
-
 
 
 model Assignment {
-  id          String      @id @default(cuid())
+  id          String    @id @default(cuid())
   title       String
   description String?
   dueDate     DateTime
-  completed   Boolean  @default(false)
+  completed   Boolean   @default(false)
   studentId   String 
   courseId    String 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  student     Student     @relation(fields: [studentId], references: [email])
-  course      Course      @relation(fields: [courseId], references: [id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  student     Student   @relation(fields: [studentId], references: [email])
+  course      Course    @relation(fields: [courseId], references: [id])
   courseNum   String
+  eventId     String    @unique
+  event       CalEvent  @relation(fields: [eventId], references: [id], onDelete: Cascade)
 }
 
 model Job {
-    id String @id @default(cuid())
+    id          String  @id @default(cuid())
     jobTitle    String
+    supervisor  String
+    jobPhone    String
+    jobEmail    String
     shifts      Shift[]
+    studentId   String  @unique
+    student     Student @relation (fields: [studentId], references:[email])
+}
+
+model Shift {
+    id          String      @id @default(cuid())
+    start       DateTime
+    end         DateTime
     studentId   String
-    student     Studen @relation (fields: [studentId], references:[email])
+    student     Student     @relation (fields: [studentId], references:[email])
+    jobId       String
+    job         Job         @relation(fields: [jobId], references:[id])
+    eventId     String      @unique
+    event       CalEvent    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+    notes       String?
+
+}
+
+model Sport {
+    id          String  @id @default(cuid())
+    sportName   String
+    teamName    String
+    Coach       String
+    coachPhone  String
+    coachEmail  String
+    studentId   String  @unique
+    student     Student @relation (fields: [studentId], references: [email])
+    practices   Practice[]
+}
+
+model Practice {
+    id          String      @id @default(cuid())
+    start       DateTime
+    end         DateTime
+    notes       String?
+    sportId     String
+    sport       Sport       @relation(fields: [sportId], references: [id])
+    studentId   String
+    student     Student     @relation(fields: [studentId], references: [email])
+    eventId     String      @unique
+    event       CalEvent    @relation(fields: [eventId], references: [id], onDelete: Cascade)
 }
